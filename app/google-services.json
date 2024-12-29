@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "426105811793",
+    "project_id": "tfgappdata",
+    "storage_bucket": "tfgappdata.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:426105811793:android:31e552788b17fe21221970",
+        "android_client_info": {
+          "package_name": "com.ejecicio.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLp5AiUqin2gtnvP0Tb6iOpog6IvEn1eU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
