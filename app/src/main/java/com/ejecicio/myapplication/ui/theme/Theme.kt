@@ -15,8 +15,8 @@ private val DarkColorScheme = darkColorScheme(
 //    primary = Pink80,
 //    secondary = PurpleGrey80,
 //    tertiary = Pink80
-    primary = CoralRed,      // Changed primary color to CoralRed
-    secondary = SoftYellow, // Changed secondary color to SoftYellow
+    primary = lightPink,      // Changed primary color to CoralRed
+    secondary = darkPink, // Changed secondary color to SoftYellow
     tertiary = LightBlue     // Added new tertiary color LightBlue
 )
 
@@ -24,9 +24,17 @@ private val LightColorScheme = lightColorScheme(
 //    primary = Purple40,
 //    secondary = PurpleGrey40,
 //    tertiary = Pink40
-    primary = CoralRed,      // Changed primary color to CoralRed
-    secondary = SoftYellow, // Changed secondary color to SoftYellow
-    tertiary = LightBlue     // Added new tertiary color LightBlue
+    primary = lightPink,
+    secondary = darkPink,
+    tertiary = lightGray,
+    background = white,
+    surface = darkerGray,
+    onPrimary = black,
+    onSecondary = white,
+    onTertiary = black,
+    onBackground = black,
+    onSurface = black
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
