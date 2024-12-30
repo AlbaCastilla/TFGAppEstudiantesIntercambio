@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="434125de-f5ab-4f0c-bfa2-f2d150e8ae8d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/google-services.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../build.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/ejecicio/myapplication/scenes/CuestionarioDiario.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,21 +31,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "AlbaCastilla"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;AlbaCastilla&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/AlbaCastilla/TFGAppEstudiantesIntercambio.git",
-    "accountId": "87ca5975-6037-4e6c-81a9-e0e888d3824f"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AlbaCastilla/TFGAppEstudiantesIntercambio.git&quot;,
+    &quot;accountId&quot;: &quot;87ca5975-6037-4e6c-81a9-e0e888d3824f&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2qu1DC4iGRjfmXoaZpje26tSFHd" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -61,7 +59,7 @@
     "android.gradle.sync.needed": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "feature/addDatabase",
+    "git-widget-placeholder": "feature/navbar",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/albac/OneDrive/2CursoDAM/TFG/Aplicacion/TFGAppEstudiantesIntercambio/app"
   }
