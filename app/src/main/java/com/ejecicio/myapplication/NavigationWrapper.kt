@@ -33,5 +33,7 @@ fun NavigationWrapper(navHostController: NavHostController) {
             MyApplicationTheme {
                 ForumPage(navController = navHostController) // Navigate to the ActivityPage
             }}
+
+
     }
 }

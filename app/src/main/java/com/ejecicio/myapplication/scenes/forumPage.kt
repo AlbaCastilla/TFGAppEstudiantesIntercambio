@@ -22,7 +22,7 @@ fun ForumPage(navController: NavHostController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF222434))
+                .background(Color.Green)
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
