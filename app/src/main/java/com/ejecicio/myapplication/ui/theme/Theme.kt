@@ -15,9 +15,16 @@ private val DarkColorScheme = darkColorScheme(
 //    primary = Pink80,
 //    secondary = PurpleGrey80,
 //    tertiary = Pink80
-    primary = lightPink,      // Changed primary color to CoralRed
-    secondary = darkPink, // Changed secondary color to SoftYellow
-    tertiary = LightBlue     // Added new tertiary color LightBlue
+    primary = darkLightPink,
+    secondary = darkDarkPink,
+    tertiary = darkLightGray,
+    background = darkWhite,
+    surface = darkDarkerGray,
+    onPrimary = darkBlack,
+    onSecondary = darkWhite,
+    onTertiary = darkBlack,
+    onBackground = darkBlack,
+    onSurface = darkBlack
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -78,7 +85,7 @@ fun MyApplicationTheme(
     content: @Composable () -> Unit
 ) {
     // Always use light theme by setting darkTheme to false
-    val colorScheme = LightColorScheme // Use the light color scheme
+    val colorScheme = DarkColorScheme // Use the light color scheme
 
     MaterialTheme(
         colorScheme = colorScheme,
