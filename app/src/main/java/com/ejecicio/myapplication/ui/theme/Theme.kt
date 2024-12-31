@@ -18,13 +18,13 @@ private val DarkColorScheme = darkColorScheme(
     primary = darkLightPink,
     secondary = darkDarkPink,
     tertiary = darkLightGray,
-    background = darkWhite,
+    background = darkWhite,//en vd es BLACK
     surface = darkDarkerGray,
-    onPrimary = darkBlack,
-    onSecondary = darkWhite,
-    onTertiary = darkBlack,
-    onBackground = darkBlack,
-    onSurface = darkBlack
+    onPrimary = darkBlack,//en vd es WHITE
+    onSecondary = darkWhite,//en vd es BLACK
+    onTertiary = darkBlack,//en vd es WHITE
+    onBackground = darkBlack,//en vd es WHITE
+    onSurface = darkWhite//en vd es BLACK
 )
 
 private val LightColorScheme = lightColorScheme(
