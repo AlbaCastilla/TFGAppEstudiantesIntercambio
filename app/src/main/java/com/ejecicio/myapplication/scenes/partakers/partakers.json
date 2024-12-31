@@ -1,0 +1,213 @@
+[
+  {
+    "id": 1,
+    "nombre": "Universidad Nebrija",
+    "correo_admin": "@nebrija.es",
+    "correo_estudiantes": "@alumnos.nebrija.es",
+    "programas_intercambio": ["Erasmus+", "Programas propios"]
+  },
+  {
+    "id": 2,
+    "nombre": "Tufts University",
+    "correo_admin": "@tufts.edu",
+    "correo_estudiantes": "@students.tufts.edu",
+    "programas_intercambio": ["Exchange Programs", "Tufts-in-Spain"]
+  },
+  {
+    "id": 3,
+    "nombre": "Schiller International University",
+    "correo_admin": "@schiller.edu",
+    "correo_estudiantes": "@students.schiller.edu",
+    "programas_intercambio": ["Global Mobility Program"]
+  },
+  {
+    "id": 4,
+    "nombre": "Universidad Complutense de Madrid",
+    "correo_admin": "@ucm.es",
+    "correo_estudiantes": "@alumnos.ucm.es",
+    "programas_intercambio": ["Erasmus+", "Convenios Bilaterales"]
+  },
+  {
+    "id": 5,
+    "nombre": "Universidad Politécnica de Madrid",
+    "correo_admin": "@upm.es",
+    "correo_estudiantes": "@alumnos.upm.es",
+    "programas_intercambio": ["Erasmus+", "Programas propios"]
+  },
+  {
+    "id": 6,
+    "nombre": "Universidad Autónoma de Madrid",
+    "correo_admin": "@uam.es",
+    "correo_estudiantes": "@estudiantes.uam.es",
+    "programas_intercambio": ["Erasmus+", "Intercambios Internacionales"]
+  },
+  {
+    "id": 7,
+    "nombre": "Universidad Carlos III de Madrid",
+    "correo_admin": "@uc3m.es",
+    "correo_estudiantes": "@alumnos.uc3m.es",
+    "programas_intercambio": ["Erasmus+", "Global Exchange"]
+  },
+  {
+    "id": 8,
+    "nombre": "Universidad de Alcalá",
+    "correo_admin": "@uah.es",
+    "correo_estudiantes": "@alumnos.uah.es",
+    "programas_intercambio": ["Erasmus+", "Programas propios"]
+  },
+  {
+    "id": 9,
+    "nombre": "Universidad Rey Juan Carlos",
+    "correo_admin": "@urjc.es",
+    "correo_estudiantes": "@alumnos.urjc.es",
+    "programas_intercambio": ["Erasmus+", "Intercambios Internacionales"]
+  },
+  {
+    "id": 10,
+    "nombre": "Universidad Pontificia Comillas",
+    "correo_admin": "@comillas.edu",
+    "correo_estudiantes": "@alumnos.comillas.edu",
+    "programas_intercambio": ["Erasmus+", "Red Internacional"]
+  },
+  {
+    "id": 11,
+    "nombre": "Universidad Europea de Madrid",
+    "correo_admin": "@uem.es",
+    "correo_estudiantes": "@estudiantes.uem.es",
+    "programas_intercambio": ["Erasmus+", "Global Exchange"]
+  },
+  {
+    "id": 12,
+    "nombre": "Universidad Alfonso X el Sabio",
+    "correo_admin": "@uax.es",
+    "correo_estudiantes": "@alumnos.uax.es",
+    "programas_intercambio": ["Erasmus+", "Programas propios"]
+  },
+  {
+    "id": 13,
+    "nombre": "Universidad Francisco de Vitoria",
+    "correo_admin": "@ufv.es",
+    "correo_estudiantes": "@alumnos.ufv.es",
+    "programas_intercambio": ["Erasmus+", "Convenios Internacionales"]
+  },
+  {
+    "id": 14,
+    "nombre": "IE University",
+    "correo_admin": "@ie.edu",
+    "correo_estudiantes": "@students.ie.edu",
+    "programas_intercambio": ["Global Mobility", "Dual Degrees"]
+  },
+  {
+    "id": 15,
+    "nombre": "Universidad Camilo José Cela",
+    "correo_admin": "@ucjc.edu",
+    "correo_estudiantes": "@alumnos.ucjc.edu",
+    "programas_intercambio": ["Erasmus+", "Intercambios Bilaterales"]
+  },
+  {
+    "id": 16,
+    "nombre": "Universidad de Salamanca (Campus de Madrid)",
+    "correo_admin": "@usal.es",
+    "correo_estudiantes": "@alumnos.usal.es",
+    "programas_intercambio": ["Erasmus+", "Programas Propios"]
+  },
+  {
+    "id": 17,
+    "nombre": "Universidad a Distancia de Madrid (UDIMA)",
+    "correo_admin": "@udima.es",
+    "correo_estudiantes": "@estudiantes.udima.es",
+    "programas_intercambio": ["Convenios Internacionales"]
+  },
+  {
+    "id": 18,
+    "nombre": "Universidad Villanueva",
+    "correo_admin": "@villanueva.edu",
+    "correo_estudiantes": "@students.villanueva.edu",
+    "programas_intercambio": ["Erasmus+", "Programas Propios"]
+  },
+  {
+    "id": 19,
+    "nombre": "Escuela de Organización Industrial (EOI)",
+    "correo_admin": "@eoi.es",
+    "correo_estudiantes": "@estudiantes.eoi.es",
+    "programas_intercambio": ["Global Exchange"]
+  },
+  {
+    "id": 20,
+    "nombre": "Centro Universitario Cardenal Cisneros",
+    "correo_admin": "@cardenalcisneros.es",
+    "correo_estudiantes": "@alumnos.cardenalcisneros.es",
+    "programas_intercambio": ["Erasmus+", "Convenios Propios"]
+  },
+  {
+    "id": 21,
+    "nombre": "CUNEF Universidad",
+    "correo_admin": "@cunef.edu",
+    "correo_estudiantes": "@students.cunef.edu",
+    "programas_intercambio": ["Erasmus+", "Global Programs"]
+  },
+  {
+    "id": 22,
+    "nombre": "Universidad Internacional de La Rioja (UNIR)",
+    "correo_admin": "@unir.net",
+    "correo_estudiantes": "@students.unir.net",
+    "programas_intercambio": ["Erasmus+", "Convenios Internacionales"]
+  },
+  {
+    "id": 23,
+    "nombre": "Universidad CEU San Pablo",
+    "correo_admin": "@ceu.es",
+    "correo_estudiantes": "@alumnos.ceu.es",
+    "programas_intercambio": ["Erasmus+", "Red Internacional"]
+  },
+  {
+    "id": 24,
+    "nombre": "Universidad TAI (Artes y Tecnología)",
+    "correo_admin": "@tai.edu",
+    "correo_estudiantes": "@students.tai.edu",
+    "programas_intercambio": ["Programas Propios"]
+  },
+  {
+    "id": 25,
+    "nombre": "Universidad Internacional Villanueva",
+    "correo_admin": "@villanueva.edu",
+    "correo_estudiantes": "@students.villanueva.edu",
+    "programas_intercambio": ["Erasmus+", "Global Exchange"]
+  },
+  {
+    "id": 26,
+    "nombre": "Universidad Europea Miguel de Cervantes (Campus Madrid)",
+    "correo_admin": "@uemc.es",
+    "correo_estudiantes": "@alumnos.uemc.es",
+    "programas_intercambio": ["Convenios Internacionales"]
+  },
+  {
+    "id": 27,
+    "nombre": "EAE Business School (Campus Madrid)",
+    "correo_admin": "@eae.es",
+    "correo_estudiantes": "@students.eae.es",
+    "programas_intercambio": ["Global Mobility"]
+  },
+  {
+    "id": 28,
+    "nombre": "Universidad Internacional SEK",
+    "correo_admin": "@sek.edu",
+    "correo_estudiantes": "@students.sek.edu",
+    "programas_intercambio": ["Erasmus+", "Intercambios Propios"]
+  },
+  {
+    "id": 29,
+    "nombre": "ESIC Business & Marketing School",
+    "correo_admin": "@esic.edu",
+    "correo_estudiantes": "@students.esic.edu",
+    "programas_intercambio": ["Global Exchange", "Erasmus+"]
+  },
+  {
+    "id": 30,
+    "nombre": "Instituto de Empresa (IE University Madrid Campus)",
+    "correo_admin": "@ie.edu",
+    "correo_estudiantes": "@students.ie.edu",
+    "programas_intercambio": ["Dual Degrees", "Global Mobility"]
+  }
+]
+//30 repeated
