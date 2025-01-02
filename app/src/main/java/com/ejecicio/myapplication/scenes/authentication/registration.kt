@@ -634,8 +634,10 @@ fun RegisterScreen(navController: NavController) {
                     val universityName = document.getString("nombre")
                     val emailEndings = mutableListOf<String>()
 
-                    document.getString("correo_admin")?.substringAfter('@')?.let { emailEndings.add(it) }
+                    //document.getString("correo_admin")?.substringAfter('@')?.let { emailEndings.add(it) }
                     document.getString("correo_estudiantes")?.substringAfter('@')?.let { emailEndings.add(it) }
+                    /// AHORA MISMO SOLO HABILITADO PARA ESTUDIANTES
+
 
                     if (universityName != null) {
                         fetchedUniversities.add(Pair(universityName, emailEndings))
@@ -787,10 +789,17 @@ fun RegisterScreen(navController: NavController) {
                                         .set(user)
                                         .addOnSuccessListener {
                                             Toast.makeText(context, "User Registered Successfully", Toast.LENGTH_SHORT).show()
+
+                                            // Navigate to ActivityPage
+                                            navController.navigate("login") {
+                                                popUpTo("RegisterScreen") { inclusive = true }
+                                            }
+
                                         }
                                         .addOnFailureListener { e ->
                                             Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                                         }
+
                                 } else {
                                     Toast.makeText(context, "Authentication Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                                 }

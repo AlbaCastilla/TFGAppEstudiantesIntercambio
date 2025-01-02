@@ -16,7 +16,7 @@ import com.ejecicio.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
 fun NavigationWrapper(navHostController: NavHostController) {
-    NavHost(navController = navHostController, startDestination = "login") {
+    NavHost(navController = navHostController, startDestination = "registration") {
         composable("infoPage") {
             MyApplicationTheme {
                 InfoPage(navController = navHostController) // Navigate to the InfoPage
