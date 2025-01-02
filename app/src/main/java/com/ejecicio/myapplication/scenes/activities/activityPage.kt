@@ -1,9 +1,10 @@
-package com.ejecicio.myapplication.scenes
+package com.ejecicio.myapplication.scenes.activities
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +28,9 @@ fun ActivityPage(navController: NavHostController) {
             contentAlignment = Alignment.Center
         ) {
             Text(text = "Activity Page", color = Color.Black)
+            Button(onClick = { navController.navigate("newActivity") }) {
+                Text(text = "Add New Activity")
+            }
         }
 
         // Floating Bottom NavBar

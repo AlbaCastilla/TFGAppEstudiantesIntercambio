@@ -664,18 +664,28 @@ fun RegisterScreen(navController: NavController) {
         TextField(value = lastname, onValueChange = { lastname = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
         Spacer(modifier = Modifier.height(10.dp))
 
+        var ageError by remember { mutableStateOf(false) }
         TextField(
             value = age,
             onValueChange = {
-                if (it.toIntOrNull() in 17..95 || it.isEmpty()) {
-                    age = it
-                }
+                age = it
+                ageError = it.toIntOrNull()?.let { it !in 17..95 } ?: false
             },
             label = { Text("Age") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            isError = ageError // Muestra error visual si es necesario
         )
+
+        if (ageError) {
+            Text(
+                text = "Age must be between 17 and 95",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
 
         Spacer(modifier = Modifier.height(10.dp))
 
