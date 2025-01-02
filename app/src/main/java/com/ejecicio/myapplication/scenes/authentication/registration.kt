@@ -666,12 +666,17 @@ fun RegisterScreen(navController: NavController) {
 
         TextField(
             value = age,
-            onValueChange = { age = it },
+            onValueChange = {
+                if (it.toIntOrNull() in 17..95 || it.isEmpty()) {
+                    age = it
+                }
+            },
             label = { Text("Age") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
+
         Spacer(modifier = Modifier.height(10.dp))
 
         // Dropdown for University Selection
