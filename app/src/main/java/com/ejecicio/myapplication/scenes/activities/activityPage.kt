@@ -508,7 +508,7 @@ fun ActivityCard(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = { onJoinClick(uid) }) {
-                Text(text = "Join")
+                Text(text = "View")
             }
         }
     }
