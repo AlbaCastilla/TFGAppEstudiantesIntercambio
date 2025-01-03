@@ -3,6 +3,7 @@ package com.ejecicio.myapplication.scenes.activities
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -176,6 +177,7 @@ fun AddActivityScreen(navController: NavHostController) {
     val db = FirebaseFirestore.getInstance()
     val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
     val creator = sharedPreferences.getString("userId", null) // Get the user ID of the logged-in user
+    Log.d("See why getting userID workks in this page and not in ActivityPage", "Make sure it works correctly here. Current User ID: $creator") // Log the current user ID
 
     var title by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
