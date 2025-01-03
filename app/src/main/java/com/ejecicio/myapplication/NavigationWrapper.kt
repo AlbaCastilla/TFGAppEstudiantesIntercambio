@@ -10,6 +10,7 @@ import com.ejecicio.myapplication.scenes.ForumPage
 import com.ejecicio.myapplication.scenes.InfoPage
 import com.ejecicio.myapplication.scenes.ProfilePage
 import com.ejecicio.myapplication.scenes.activities.AddActivityScreen
+import com.ejecicio.myapplication.scenes.activities.FullActivity
 import com.ejecicio.myapplication.scenes.authentication.LoginScreen
 import com.ejecicio.myapplication.scenes.authentication.RegisterScreen
 import com.ejecicio.myapplication.ui.theme.MyApplicationTheme
@@ -29,6 +30,11 @@ fun NavigationWrapper(navHostController: NavHostController) {
         composable("newActivity") {
             MyApplicationTheme {
                 AddActivityScreen(navController = navHostController) // Navigate to the ActivityPage
+            }}
+
+        composable("fullActivity") {
+            MyApplicationTheme {
+                FullActivity(navController = navHostController) // Navigate to the ActivityPage
             }}
 
         composable("profilePage") {
