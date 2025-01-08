@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.ejecicio.myapplication.scenes.messages.Chat
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
@@ -333,14 +334,40 @@ fun AddActivityScreen(navController: NavHostController) {
                         creator = creator // Use the logged-in user's ID
                     )
 
+//                    db.collection("activities")
+//                        .add(newActivity)
+//                        .addOnSuccessListener {
+//                            Toast.makeText(context, "Activity created successfully!", Toast.LENGTH_SHORT).show()
+//                            navController.popBackStack() // Navigate back
+//                        }
+//                        .addOnFailureListener { e ->
+//                            Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+//                        }
+                    // Add the Activity to Firestore
                     db.collection("activities")
                         .add(newActivity)
-                        .addOnSuccessListener {
-                            Toast.makeText(context, "Activity created successfully!", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack() // Navigate back
+                        .addOnSuccessListener { activityDocument ->
+                            // Successfully added the activity, now create a Chat object
+                            val newChat = Chat(
+                                uid = UUID.randomUUID().toString(),
+                                activity = activityDocument.id, // Use Firestore's generated activity ID
+                                creator = creator,
+                                participants = listOf(creator)
+                            )
+
+                            // Add the Chat to Firestore
+                            db.collection("chats")
+                                .add(newChat)
+                                .addOnSuccessListener {
+                                    Toast.makeText(context, "Activity and Chat created successfully!", Toast.LENGTH_SHORT).show()
+                                    navController.popBackStack() // Navigate back
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(context, "Error creating Chat: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
                         }
                         .addOnFailureListener { e ->
-                            Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Error creating Activity: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                 } else {
                     Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
