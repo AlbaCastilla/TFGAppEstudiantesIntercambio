@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -19,8 +20,8 @@ fun FloatingBottomNavBar(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    val items = listOf("Info", "Activities", "Forum", "Profile")
-    val routes = listOf("infoPage", "activityPage", "forumPage", "profilePage")
+    val items = listOf("Info", "Activities", "Forum", "Messages", "Profile")
+    val routes = listOf("infoPage", "activityPage", "forumPage", "messagesPage", "profilePage")
 
     // Get the current route from the NavController's back stack
     val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
@@ -71,10 +72,12 @@ fun FloatingBottomNavBar(
                     ) {
                         Text(
                             text = item,
+                            fontSize = 12.sp,//scalable pixels
                             color = if (index == selectedIndex)
                                 MaterialTheme.colorScheme.onSecondary // Selected text color
                             else
                                 MaterialTheme.colorScheme.onPrimary // Unselected text color
+
                         )
                     }
                 }

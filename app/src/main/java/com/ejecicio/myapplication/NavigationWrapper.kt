@@ -8,6 +8,7 @@ import com.ejecicio.myapplication.scenes.partakers.AddUniversities
 import com.ejecicio.myapplication.scenes.activities.ActivityPage
 import com.ejecicio.myapplication.scenes.ForumPage
 import com.ejecicio.myapplication.scenes.InfoPage
+import com.ejecicio.myapplication.scenes.MessagesPage
 import com.ejecicio.myapplication.scenes.ProfilePage
 import com.ejecicio.myapplication.scenes.activities.AddActivityScreen
 import com.ejecicio.myapplication.scenes.activities.FullActivity
@@ -35,6 +36,11 @@ fun NavigationWrapper(navHostController: NavHostController) {
         composable("fullActivity") {
             MyApplicationTheme {
                 FullActivity(navController = navHostController) // Navigate to the ActivityPage
+            }}
+
+        composable("messagesPage") {
+            MyApplicationTheme {
+                MessagesPage(navController = navHostController) // Navigate to the ActivityPage
             }}
 
         composable("profilePage") {
