@@ -22,11 +22,11 @@ fun ForumPage(navController: NavHostController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Blue)
+                .background(Color.Green)
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Forum Page", color = Color.Black)
+            Text(text = "Forum Page", color = Color.White)
         }
 
         // Floating Bottom NavBar

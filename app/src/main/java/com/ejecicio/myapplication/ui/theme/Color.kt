@@ -23,3 +23,13 @@ val lightGray = Color(0xFFFF5F5F5)
 val white = Color(0xFFFFFFFF)
 val black = Color(0xFF000000)
 
+
+
+val darkLightPink = Color(0xFFD53D65) // Darker version of lightPink
+val darkDarkPink = Color(0xFFF6C4D0) // Darker version of darkPink
+val darkDarkerGray = Color(0xFFD3D0D0) // Darker version of darkerGray
+val darkLightGray = Color(0xFF8A8787) // Darker version of lightGray
+
+val darkWhite = Color(0xFF222434) // Dark background for dark mode
+val darkBlack = Color(0xFFFDFCFC) // Light black text for dark mode
+
