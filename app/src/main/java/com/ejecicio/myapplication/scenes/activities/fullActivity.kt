@@ -679,13 +679,213 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 
-data class Chat(
-    val uid: String, // uid of chat
-    val activity: String, // uid of activity
-    val creator: String, // uid of creator of activity
-    val participants: List<String> // uid of participants
-)
-
+//@Composable
+//fun FullActivity(navController: NavHostController) {
+//    val context = LocalContext.current
+//    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+//    val selectedActivityUid = sharedPreferences.getString("selectedActivityUid", null)
+//    val userId = sharedPreferences.getString("userId", null)
+//    val db = FirebaseFirestore.getInstance()
+//
+//    var activityDetails by remember { mutableStateOf<Activity?>(null) }
+//    var creatorDetails by remember { mutableStateOf<Pair<String, String>?>(null) }
+//
+//    LaunchedEffect(selectedActivityUid) {
+//        selectedActivityUid?.let { uid ->
+//            db.collection("activities").document(uid)
+//                .get()
+//                .addOnSuccessListener { document ->
+//                    if (document != null && document.exists()) {
+//                        val creatorUid = document.getString("creator") ?: ""
+//                        activityDetails = Activity(
+//                            uid = uid,
+//                            title = document.getString("title") ?: "No Title",
+//                            category = document.getString("category") ?: "No Category",
+//                            description = document.getString("description") ?: "No Description",
+//                            price = document.getDouble("price")?.toFloat() ?: 0f,
+//                            maxPeople = document.getLong("maxPeople")?.toInt() ?: 0,
+//                            date = document.getString("date") ?: "No Date",
+//                            time = document.getString("time") ?: "No Time",
+//                            duration = document.getString("duration") ?: "No Duration",
+//                            locationLink = document.getString("locationLink") ?: "No Link",
+//                            otherInfo = document.getString("otherInfo") ?: "No Info",
+//                            peopleAdded = document.getLong("peopleAdded")?.toInt() ?: 0,
+//                            creator = creatorUid
+//                        )
+//
+//                        // Fetch creator details
+//                        db.collection("users").document(creatorUid)
+//                            .get()
+//                            .addOnSuccessListener { userDocument ->
+//                                if (userDocument != null && userDocument.exists()) {
+//                                    val name = userDocument.getString("name") ?: "No Name"
+//                                    val university = userDocument.getString("university") ?: "No University"
+//                                    creatorDetails = name to university
+//                                }
+//                            }
+//                    }
+//                }
+//        }
+//    }
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Color(0xFFF5F5F5))
+//    ) {
+//        Column {
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                contentAlignment = Alignment.CenterStart
+//            ) {
+//                IconButton(
+//                    onClick = { navController.popBackStack() },
+//                    modifier = Modifier
+//                        .size(48.dp)
+//                        .background(Color(0xFFE0E0E0), shape = CircleShape)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.ArrowBack,
+//                        contentDescription = "Back",
+//                        tint = Color.Black
+//                    )
+//                }
+//            }
+//
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                contentAlignment = Alignment.TopCenter
+//            ) {
+//                if (activityDetails != null) {
+//                    Column(
+//                        verticalArrangement = Arrangement.spacedBy(12.dp),
+//                        horizontalAlignment = Alignment.CenterHorizontally,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(16.dp)
+//                    ) {
+//                        Text(
+//                            text = activityDetails!!.title,
+//                            fontSize = 24.sp,
+//                            fontWeight = FontWeight.Bold,
+//                            textAlign = TextAlign.Center,
+//                            color = Color.Black
+//                        )
+//
+//                        Text(
+//                            text = activityDetails!!.description,
+//                            fontSize = 16.sp,
+//                            textAlign = TextAlign.Center,
+//                            color = Color.Gray
+//                        )
+//
+//                        Row(
+//                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 16.dp)
+//                        ) {
+//                            PinkBox(label = "Date", value = activityDetails!!.date)
+//                            PinkBox(label = "Time", value = activityDetails!!.time)
+//                        }
+//
+//                        InfoRow("Price", "${activityDetails!!.price}€")
+//                        InfoRow("Duration", activityDetails!!.duration)
+//                        InfoRow("Location Link", activityDetails!!.locationLink)
+//                        InfoRow("Other Info", activityDetails!!.otherInfo)
+//
+//                        Spacer(modifier = Modifier.height(16.dp))
+//
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 16.dp)
+//                                .background(Color(0xFFFFC1E3), shape = CircleShape)
+//                                .padding(16.dp),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            Row(verticalAlignment = Alignment.CenterVertically) {
+//                                Icon(
+//                                    imageVector = Icons.Default.AccountCircle,
+//                                    contentDescription = "User Icon",
+//                                    modifier = Modifier
+//                                        .size(48.dp)
+//                                        .padding(end = 8.dp),
+//                                    tint = Color(0xFFE91E63)
+//                                )
+//                                if (creatorDetails != null) {
+//                                    Column {
+//                                        Text(
+//                                            text = creatorDetails!!.first,
+//                                            fontWeight = FontWeight.Bold,
+//                                            fontSize = 18.sp,
+//                                            color = Color.Black
+//                                        )
+//                                        Text(
+//                                            text = creatorDetails!!.second,
+//                                            fontSize = 14.sp,
+//                                            color = Color.Gray
+//                                        )
+//                                    }
+//                                } else {
+//                                    Text(text = "Loading creator details...", color = Color.Gray)
+//                                }
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    Text(text = "Loading activity details...", color = Color.Gray)
+//                }
+//            }
+//
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize(),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Button(
+//                    onClick = {
+//                        selectedActivityUid?.let { activityUid ->
+//                            userId?.let { uid ->
+//                                db.collection("chats")
+//                                    .whereEqualTo("activity", activityUid)
+//                                    .get()
+//                                    .addOnSuccessListener { querySnapshot ->
+//                                        if (!querySnapshot.isEmpty) {
+//                                            val chatDoc = querySnapshot.documents.first()
+//                                            val chatId = chatDoc.id
+//                                            val currentParticipants = chatDoc["participants"] as? List<String> ?: emptyList()
+//                                            if (!currentParticipants.contains(uid)) {
+//                                                val updatedParticipants = currentParticipants + uid
+//                                                db.collection("chats").document(chatId)
+//                                                    .update("participants", updatedParticipants)
+//                                                    .addOnSuccessListener {
+//                                                        navController.navigate("messagesPage")
+//                                                    }
+//                                                    .addOnFailureListener {
+//                                                        // Handle update failure
+//                                                    }
+//                                            } else {
+//                                                navController.navigate("messagesPage")
+//                                            }
+//                                        } else {
+//                                            navController.navigate("messagesPage")
+//                                        }
+//                                    }
+//                            }
+//                        }
+//                    },
+//                ) {
+//                    Text(text = "Join")
+//                }
+//            }
+//        }
+//    }
+//}
 @Composable
 fun FullActivity(navController: NavHostController) {
     val context = LocalContext.current
@@ -748,7 +948,7 @@ fun FullActivity(navController: NavHostController) {
                 contentAlignment = Alignment.CenterStart
             ) {
                 IconButton(
-                    onClick = { navController.popBackStack() },
+                    onClick = { navController.popBackStack("activityPage", inclusive = false) },
                     modifier = Modifier
                         .size(48.dp)
                         .background(Color(0xFFE0E0E0), shape = CircleShape)
@@ -871,25 +1071,455 @@ fun FullActivity(navController: NavHostController) {
                                                 db.collection("chats").document(chatId)
                                                     .update("participants", updatedParticipants)
                                                     .addOnSuccessListener {
-                                                        // Handle successful update
+                                                        println("Navigating to messagesPage") // Debug log
+                                                        navController.navigate("messagesPage") {
+                                                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                                            launchSingleTop = true
+                                                            restoreState = true
+                                                        }
                                                     }
                                                     .addOnFailureListener {
                                                         // Handle update failure
                                                     }
+                                            } else {
+                                                println("Already a participant, navigating to messagesPage") // Debug log
+                                                navController.navigate("messagesPage") {
+                                                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                                    launchSingleTop = true
+                                                    restoreState = true
+                                                }
+                                            }
+                                        } else {
+                                            println("No chat document found, navigating to messagesPage") // Debug log
+                                            navController.navigate("messagesPage") {
+                                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                                launchSingleTop = true
+                                                restoreState = true
                                             }
                                         }
                                     }
                             }
                         }
-                        navController.navigate("messagesPage")//asegurarse de retroalimentacion a usuarios por lo q cambiar esto d sitio en algun momento
                     },
-                    ) {
+                ) {
                     Text(text = "Join")
                 }
             }
         }
     }
 }
+//@Composable
+//fun FullActivity(navController: NavHostController) {
+//    val context = LocalContext.current
+//    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+//    val selectedActivityUid = sharedPreferences.getString("selectedActivityUid", null)
+//    val userId = sharedPreferences.getString("userId", null)
+//    val db = FirebaseFirestore.getInstance()
+//
+//    var activityDetails by remember { mutableStateOf<Activity?>(null) }
+//    var creatorDetails by remember { mutableStateOf<Pair<String, String>?>(null) }
+//
+//    LaunchedEffect(selectedActivityUid) {
+//        selectedActivityUid?.let { uid ->
+//            db.collection("activities").document(uid)
+//                .get()
+//                .addOnSuccessListener { document ->
+//                    if (document != null && document.exists()) {
+//                        val creatorUid = document.getString("creator") ?: ""
+//                        activityDetails = Activity(
+//                            uid = uid,
+//                            title = document.getString("title") ?: "No Title",
+//                            category = document.getString("category") ?: "No Category",
+//                            description = document.getString("description") ?: "No Description",
+//                            price = document.getDouble("price")?.toFloat() ?: 0f,
+//                            maxPeople = document.getLong("maxPeople")?.toInt() ?: 0,
+//                            date = document.getString("date") ?: "No Date",
+//                            time = document.getString("time") ?: "No Time",
+//                            duration = document.getString("duration") ?: "No Duration",
+//                            locationLink = document.getString("locationLink") ?: "No Link",
+//                            otherInfo = document.getString("otherInfo") ?: "No Info",
+//                            peopleAdded = document.getLong("peopleAdded")?.toInt() ?: 0,
+//                            creator = creatorUid
+//                        )
+//
+//                        // Fetch creator details
+//                        db.collection("users").document(creatorUid)
+//                            .get()
+//                            .addOnSuccessListener { userDocument ->
+//                                if (userDocument != null && userDocument.exists()) {
+//                                    val name = userDocument.getString("name") ?: "No Name"
+//                                    val university = userDocument.getString("university") ?: "No University"
+//                                    creatorDetails = name to university
+//                                }
+//                            }
+//                    }
+//                }
+//        }
+//    }
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Color(0xFFF5F5F5))
+//    ) {
+//        Column {
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                contentAlignment = Alignment.CenterStart
+//            ) {
+//                IconButton(
+//                    onClick = { navController.popBackStack() },
+//                    modifier = Modifier
+//                        .size(48.dp)
+//                        .background(Color(0xFFE0E0E0), shape = CircleShape)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.ArrowBack,
+//                        contentDescription = "Back",
+//                        tint = Color.Black
+//                    )
+//                }
+//            }
+//
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                contentAlignment = Alignment.TopCenter
+//            ) {
+//                if (activityDetails != null) {
+//                    Column(
+//                        verticalArrangement = Arrangement.spacedBy(12.dp),
+//                        horizontalAlignment = Alignment.CenterHorizontally,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(16.dp)
+//                    ) {
+//                        Text(
+//                            text = activityDetails!!.title,
+//                            fontSize = 24.sp,
+//                            fontWeight = FontWeight.Bold,
+//                            textAlign = TextAlign.Center,
+//                            color = Color.Black
+//                        )
+//
+//                        Text(
+//                            text = activityDetails!!.description,
+//                            fontSize = 16.sp,
+//                            textAlign = TextAlign.Center,
+//                            color = Color.Gray
+//                        )
+//
+//                        Row(
+//                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 16.dp)
+//                        ) {
+//                            PinkBox(label = "Date", value = activityDetails!!.date)
+//                            PinkBox(label = "Time", value = activityDetails!!.time)
+//                        }
+//
+//                        InfoRow("Price", "${activityDetails!!.price}€")
+//                        InfoRow("Duration", activityDetails!!.duration)
+//                        InfoRow("Location Link", activityDetails!!.locationLink)
+//                        InfoRow("Other Info", activityDetails!!.otherInfo)
+//
+//                        Spacer(modifier = Modifier.height(16.dp))
+//
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 16.dp)
+//                                .background(Color(0xFFFFC1E3), shape = CircleShape)
+//                                .padding(16.dp),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            Row(verticalAlignment = Alignment.CenterVertically) {
+//                                Icon(
+//                                    imageVector = Icons.Default.AccountCircle,
+//                                    contentDescription = "User Icon",
+//                                    modifier = Modifier
+//                                        .size(48.dp)
+//                                        .padding(end = 8.dp),
+//                                    tint = Color(0xFFE91E63)
+//                                )
+//                                if (creatorDetails != null) {
+//                                    Column {
+//                                        Text(
+//                                            text = creatorDetails!!.first,
+//                                            fontWeight = FontWeight.Bold,
+//                                            fontSize = 18.sp,
+//                                            color = Color.Black
+//                                        )
+//                                        Text(
+//                                            text = creatorDetails!!.second,
+//                                            fontSize = 14.sp,
+//                                            color = Color.Gray
+//                                        )
+//                                    }
+//                                } else {
+//                                    Text(text = "Loading creator details...", color = Color.Gray)
+//                                }
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    Text(text = "Loading activity details...", color = Color.Gray)
+//                }
+//            }
+//
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize(),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Button(
+//                    onClick = {
+//                        selectedActivityUid?.let { activityUid ->
+//                            userId?.let { uid ->
+//                                db.collection("chats")
+//                                    .whereEqualTo("activity", activityUid)
+//                                    .get()
+//                                    .addOnSuccessListener { querySnapshot ->
+//                                        if (!querySnapshot.isEmpty) {
+//                                            val chatDoc = querySnapshot.documents.first()
+//                                            val chatId = chatDoc.id
+//                                            val currentParticipants = chatDoc["participants"] as? List<String> ?: emptyList()
+//                                            if (!currentParticipants.contains(uid)) {
+//                                                val updatedParticipants = currentParticipants + uid
+//                                                db.collection("chats").document(chatId)
+//                                                    .update("participants", updatedParticipants)
+//                                                    .addOnSuccessListener {
+//                                                        navController.navigate("messagesPage")
+//                                                    }
+//                                                    .addOnFailureListener {
+//                                                        // Handle update failure
+//                                                    }
+//                                            } else {
+//                                                navController.navigate("messagesPage")
+//                                            }
+//                                        } else {
+//                                            navController.navigate("messagesPage")
+//                                        }
+//                                    }
+//                            }
+//                        }
+//                    },
+//                ) {
+//                    Text(text = "Join")
+//                }
+//            }
+//        }
+//    }
+//}
+
+//@Composable
+//fun FullActivity(navController: NavHostController) {
+//    val context = LocalContext.current
+//    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+//    val selectedActivityUid = sharedPreferences.getString("selectedActivityUid", null)
+//    val userId = sharedPreferences.getString("userId", null)
+//    val db = FirebaseFirestore.getInstance()
+//
+//    var activityDetails by remember { mutableStateOf<Activity?>(null) }
+//    var creatorDetails by remember { mutableStateOf<Pair<String, String>?>(null) }
+//
+//    LaunchedEffect(selectedActivityUid) {
+//        selectedActivityUid?.let { uid ->
+//            db.collection("activities").document(uid)
+//                .get()
+//                .addOnSuccessListener { document ->
+//                    if (document != null && document.exists()) {
+//                        val creatorUid = document.getString("creator") ?: ""
+//                        activityDetails = Activity(
+//                            uid = uid,
+//                            title = document.getString("title") ?: "No Title",
+//                            category = document.getString("category") ?: "No Category",
+//                            description = document.getString("description") ?: "No Description",
+//                            price = document.getDouble("price")?.toFloat() ?: 0f,
+//                            maxPeople = document.getLong("maxPeople")?.toInt() ?: 0,
+//                            date = document.getString("date") ?: "No Date",
+//                            time = document.getString("time") ?: "No Time",
+//                            duration = document.getString("duration") ?: "No Duration",
+//                            locationLink = document.getString("locationLink") ?: "No Link",
+//                            otherInfo = document.getString("otherInfo") ?: "No Info",
+//                            peopleAdded = document.getLong("peopleAdded")?.toInt() ?: 0,
+//                            creator = creatorUid
+//                        )
+//
+//                        // Fetch creator details
+//                        db.collection("users").document(creatorUid)
+//                            .get()
+//                            .addOnSuccessListener { userDocument ->
+//                                if (userDocument != null && userDocument.exists()) {
+//                                    val name = userDocument.getString("name") ?: "No Name"
+//                                    val university = userDocument.getString("university") ?: "No University"
+//                                    creatorDetails = name to university
+//                                }
+//                            }
+//                    }
+//                }
+//        }
+//    }
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Color(0xFFF5F5F5))
+//    ) {
+//        Column {
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                contentAlignment = Alignment.CenterStart
+//            ) {
+//                IconButton(
+//                    onClick = { navController.popBackStack() },
+//                    modifier = Modifier
+//                        .size(48.dp)
+//                        .background(Color(0xFFE0E0E0), shape = CircleShape)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.ArrowBack,
+//                        contentDescription = "Back",
+//                        tint = Color.Black
+//                    )
+//                }
+//            }
+//
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                contentAlignment = Alignment.TopCenter
+//            ) {
+//                if (activityDetails != null) {
+//                    Column(
+//                        verticalArrangement = Arrangement.spacedBy(12.dp),
+//                        horizontalAlignment = Alignment.CenterHorizontally,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(16.dp)
+//                    ) {
+//                        Text(
+//                            text = activityDetails!!.title,
+//                            fontSize = 24.sp,
+//                            fontWeight = FontWeight.Bold,
+//                            textAlign = TextAlign.Center,
+//                            color = Color.Black
+//                        )
+//
+//                        Text(
+//                            text = activityDetails!!.description,
+//                            fontSize = 16.sp,
+//                            textAlign = TextAlign.Center,
+//                            color = Color.Gray
+//                        )
+//
+//                        Row(
+//                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 16.dp)
+//                        ) {
+//                            PinkBox(label = "Date", value = activityDetails!!.date)
+//                            PinkBox(label = "Time", value = activityDetails!!.time)
+//                        }
+//
+//                        InfoRow("Price", "${activityDetails!!.price}€")
+//                        InfoRow("Duration", activityDetails!!.duration)
+//                        InfoRow("Location Link", activityDetails!!.locationLink)
+//                        InfoRow("Other Info", activityDetails!!.otherInfo)
+//
+//                        Spacer(modifier = Modifier.height(16.dp))
+//
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 16.dp)
+//                                .background(Color(0xFFFFC1E3), shape = CircleShape)
+//                                .padding(16.dp),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            Row(verticalAlignment = Alignment.CenterVertically) {
+//                                Icon(
+//                                    imageVector = Icons.Default.AccountCircle,
+//                                    contentDescription = "User Icon",
+//                                    modifier = Modifier
+//                                        .size(48.dp)
+//                                        .padding(end = 8.dp),
+//                                    tint = Color(0xFFE91E63)
+//                                )
+//                                if (creatorDetails != null) {
+//                                    Column {
+//                                        Text(
+//                                            text = creatorDetails!!.first,
+//                                            fontWeight = FontWeight.Bold,
+//                                            fontSize = 18.sp,
+//                                            color = Color.Black
+//                                        )
+//                                        Text(
+//                                            text = creatorDetails!!.second,
+//                                            fontSize = 14.sp,
+//                                            color = Color.Gray
+//                                        )
+//                                    }
+//                                } else {
+//                                    Text(text = "Loading creator details...", color = Color.Gray)
+//                                }
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    Text(text = "Loading activity details...", color = Color.Gray)
+//                }
+//            }
+//
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize(),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Button(
+//                    onClick = {
+//                        selectedActivityUid?.let { activityUid ->
+//                            userId?.let { uid ->
+//                                db.collection("chats")
+//                                    .whereEqualTo("activity", activityUid)
+//                                    .get()
+//                                    .addOnSuccessListener { querySnapshot ->
+//                                        if (!querySnapshot.isEmpty) {
+//                                            val chatDoc = querySnapshot.documents.first()
+//                                            val chatId = chatDoc.id
+//                                            val currentParticipants = chatDoc["participants"] as? List<String> ?: emptyList()
+//                                            if (!currentParticipants.contains(uid)) {
+//                                                val updatedParticipants = currentParticipants + uid
+//                                                db.collection("chats").document(chatId)
+//                                                    .update("participants", updatedParticipants)
+//                                                    .addOnSuccessListener {
+//                                                        // Handle successful update
+//                                                    }
+//                                                    .addOnFailureListener {
+//                                                        // Handle update failure
+//                                                    }
+//                                            }
+//                                        }
+//                                    }
+//                            }
+//                        }
+//                        navController.navigate("messagesPage")//asegurarse de retroalimentacion a usuarios por lo q cambiar esto d sitio en algun momento
+//                    },
+//                    ) {
+//                    Text(text = "Join")
+//                }
+//            }
+//        }
+//    }
+//}
 
 
 @Composable

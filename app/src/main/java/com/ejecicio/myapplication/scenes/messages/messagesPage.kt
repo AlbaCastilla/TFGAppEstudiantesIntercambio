@@ -145,6 +145,108 @@ import androidx.navigation.NavHostController
 import com.ejecicio.myapplication.components.FloatingBottomNavBar
 import com.google.firebase.firestore.FirebaseFirestore
 
+//@Composable
+//fun MessagesPage(navController: NavHostController) {
+//    // Initialize Firestore and SharedPreferences
+//    val context = LocalContext.current
+//    val db = FirebaseFirestore.getInstance()
+//    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+//    val creator = sharedPreferences.getString("userId", null)
+//
+//    // State to store the list of chat UIDs
+//    var chatUids by remember { mutableStateOf(listOf<String>()) }
+//
+//    // Fetch chats from Firestore
+//    LaunchedEffect(creator) {
+//        if (creator != null) {
+//            db.collection("chats")
+//                .whereArrayContains("participants", creator)
+//                .get()
+//                .addOnSuccessListener { documents ->
+//                    // Extract the chat UIDs and update the state
+//                    val uids = documents.map { it.getString("uid").orEmpty() }
+//                    chatUids = uids
+//                }
+//                .addOnFailureListener { e ->
+//                    // Handle the error (optional)
+//                    e.printStackTrace()
+//                }
+//        }
+//    }
+//
+//    Box(
+//        modifier = Modifier.fillMaxSize()
+//    ) {
+//        // Main content
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .background(Color.Magenta)
+//                .padding(16.dp)
+//        ) {
+//            if (chatUids.isNotEmpty()) {
+//                // Display the list of chat UIDs in a column
+//                LazyColumn(
+//                    modifier = Modifier.fillMaxSize(),
+//                    verticalArrangement = Arrangement.spacedBy(8.dp),
+//                ) {
+//                    items(chatUids) { uid ->
+//                        ChatCard(uid = uid)
+//                    }
+//                }
+//            } else {
+//                // Display a message if there are no chats
+//                Box(
+//                    modifier = Modifier.fillMaxSize(),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    Text(
+//                        text = "No chats found",
+//                        color = Color.White,
+//                        fontSize = 18.sp,
+//                        fontWeight = FontWeight.Bold
+//                    )
+//                }
+//            }
+//        }
+//
+//        // Floating Bottom NavBar
+//        FloatingBottomNavBar(
+//            navController = navController, // Pass the navController
+//            modifier = Modifier
+//                .align(Alignment.BottomCenter) // Place the navbar at the bottom
+//                .padding(bottom = 16.dp)
+//        )
+//    }
+//}
+//
+//@Composable
+//fun ChatCard(uid: String) {
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 8.dp),
+//        colors = CardDefaults.cardColors(
+//            containerColor = Color.White
+//        ),
+//        elevation = CardDefaults.cardElevation(4.dp)
+//    ) {
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp)
+//        ) {
+//            Text(
+//                text = "Chat UID: $uid",
+//                fontSize = 16.sp,
+//                fontWeight = FontWeight.Medium,
+//                color = Color.Black
+//            )
+//        }
+//    }
+//}
+
+
 @Composable
 fun MessagesPage(navController: NavHostController) {
     // Initialize Firestore and SharedPreferences
