@@ -2,8 +2,10 @@ package com.ejecicio.myapplication
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.ejecicio.myapplication.scenes.partakers.AddUniversities
 import com.ejecicio.myapplication.scenes.activities.ActivityPage
 import com.ejecicio.myapplication.scenes.ForumPage
@@ -14,6 +16,7 @@ import com.ejecicio.myapplication.scenes.activities.AddActivityScreen
 import com.ejecicio.myapplication.scenes.activities.FullActivity
 import com.ejecicio.myapplication.scenes.authentication.LoginScreen
 import com.ejecicio.myapplication.scenes.authentication.RegisterScreen
+import com.ejecicio.myapplication.scenes.messages.ChatPage
 import com.ejecicio.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
@@ -42,6 +45,20 @@ fun NavigationWrapper(navHostController: NavHostController) {
             MyApplicationTheme {
                 MessagesPage(navController = navHostController) // Navigate to the ActivityPage
             }}
+
+//        composable("chatPage") {
+//            MyApplicationTheme {
+//                ChatPage(navController = navHostController, id:String) // Navigate to the ActivityPage
+//            }}
+        composable(
+            "chatPage/{chatId}", // Define the dynamic route
+            arguments = listOf(navArgument("chatId") { type = NavType.StringType }) // Define the argument type
+        ) { backStackEntry ->
+            MyApplicationTheme {
+                val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                ChatPage(navController = navHostController, chatId = chatId) // Pass chatId to ChatPage
+            }
+        }
 
         composable("profilePage") {
             MyApplicationTheme {

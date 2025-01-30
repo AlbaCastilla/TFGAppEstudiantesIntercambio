@@ -1073,6 +1073,7 @@ fun FullActivity(navController: NavHostController) {
                                                     .addOnSuccessListener {
                                                         println("Navigating to messagesPage") // Debug log
                                                         navController.navigate("messagesPage") {
+    //EL PROBLEMA CON LA NAVEGACION CREO QUE ESTÁ AQUI
                                                             popUpTo(navController.graph.startDestinationId) { saveState = true }
                                                             launchSingleTop = true
                                                             restoreState = true

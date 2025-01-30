@@ -127,6 +127,7 @@ package com.ejecicio.myapplication.scenes.messages
 
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -293,7 +294,7 @@ fun MessagesPage(navController: NavHostController) {
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(chatUids) { uid ->
-                        ChatCard(uid = uid)
+                        ChatCard(uid = uid, navController = navController)
                     }
                 }
             } else {
@@ -322,15 +323,40 @@ fun MessagesPage(navController: NavHostController) {
     }
 }
 
+//@Composable
+//fun ChatCard(uid: String) {
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 8.dp),
+//        colors = CardDefaults.cardColors(
+//            containerColor = Color.White
+//        ),
+//        elevation = CardDefaults.cardElevation(4.dp)
+//    ) {
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp)
+//        ) {
+//            Text(
+//                text = "Chat UID: $uid",
+//                fontSize = 16.sp,
+//                fontWeight = FontWeight.Medium,
+//                color = Color.Black
+//            )
+//        }
+//    }
+//}
+
 @Composable
-fun ChatCard(uid: String) {
+fun ChatCard(uid: String, navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
+            .padding(horizontal = 8.dp)
+            .clickable { navController.navigate("chatPage/$uid") }, // Navegar al chat con ID
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Box(
@@ -347,3 +373,4 @@ fun ChatCard(uid: String) {
         }
     }
 }
+
