@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,12 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ejecicio.myapplication.scenes.messages.Message
 import com.google.firebase.firestore.Query
 import java.util.UUID
+
 @Composable
 fun ChatPage(navController: NavHostController, chatId: String) {
     val db = FirebaseFirestore.getInstance()
@@ -62,7 +66,11 @@ fun ChatPage(navController: NavHostController, chatId: String) {
             }
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)
+        .imePadding()  // Ajusta el contenido al teclado
+    ) {
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -80,7 +88,15 @@ fun ChatPage(navController: NavHostController, chatId: String) {
                 value = messageText,
                 onValueChange = { messageText = it },
                 modifier = Modifier.weight(1f),
-                placeholder = { Text("Escribe un mensaje...") }
+                placeholder = { Text("Escribe un mensaje...") },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        // Hacer algo cuando el usuario presiona "Enter" o "Done"
+                    }
+                ),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                )
             )
 
             Button(
@@ -124,6 +140,178 @@ fun ChatPage(navController: NavHostController, chatId: String) {
         }
     }
 }
+
+// Componente de burbuja de mensaje
+@Composable
+fun MessageBubble(message: Message, currentUserId: String) {
+    val isCurrentUser = message.userId == currentUserId
+    val bubbleColor = if (isCurrentUser) Color.Blue else Color.Gray
+    val alignment = if (isCurrentUser) Alignment.CenterEnd else Alignment.CenterStart
+
+    Log.d("MessageBubble", "Mostrando mensaje de: ${message.userName} - ${message.info}")
+
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = alignment
+    ) {
+        Column(
+            modifier = Modifier
+                .background(bubbleColor, shape = RoundedCornerShape(8.dp))
+                .padding(8.dp)
+                .widthIn(max = 250.dp)
+        ) {
+            Text(
+                text = message.userName,
+                fontSize = 12.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = message.info,
+                fontSize = 16.sp,
+                color = Color.White
+            )
+        }
+    }
+}
+
+//@Composable
+//fun ChatPage(navController: NavHostController, chatId: String) {
+//    val db = FirebaseFirestore.getInstance()
+//    val context = LocalContext.current
+//    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+//    val userId = sharedPreferences.getString("userId", null)
+//    val userName = sharedPreferences.getString("userName", "Unknown")
+//
+//    var messages by remember { mutableStateOf(listOf<Message>()) }
+//    var messageText by remember { mutableStateOf("") }
+//
+//    Log.d("ChatPage", "Usando chatId: $chatId")
+//
+//    LaunchedEffect(chatId) {
+//        db.collection("chats").whereEqualTo("uid", chatId).get()
+//            .addOnSuccessListener { documents ->
+//                if (!documents.isEmpty) {
+//                    val chatDocId = documents.documents[0].id
+//                    db.collection("chats").document(chatDocId)
+//                        .collection("messages")
+//                        .orderBy("timestamp")
+//                        .addSnapshotListener { snapshot, e ->
+//                            if (e != null) {
+//                                Log.e("ChatPage", "Error al cargar los mensajes", e)
+//                                return@addSnapshotListener
+//                            }
+//
+//                            if (snapshot != null) {
+//                                Log.d("ChatPage", "Mensajes cargados: ${snapshot.documents.size}")
+//                            }
+//                            messages = snapshot?.documents?.mapNotNull { doc ->
+//                                val timestamp = doc.getString("timestamp") ?: ""
+//                                doc.toObject(Message::class.java)?.copy(timestamp = timestamp)
+//                            } ?: emptyList()
+//
+//                            Log.d("ChatPage", "Mensajes actuales: $messages")
+//                        }
+//                }
+//            }
+//    }
+//
+//    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+//        LazyColumn(
+//            modifier = Modifier.weight(1f),
+//            verticalArrangement = Arrangement.spacedBy(8.dp)
+//        ) {
+//            items(messages) { message ->
+//                MessageBubble(message = message, currentUserId = userId.orEmpty())
+//            }
+//        }
+//
+//        Row(
+//            modifier = Modifier.fillMaxWidth().padding(8.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            OutlinedTextField(
+//                value = messageText,
+//                onValueChange = { messageText = it },
+//                modifier = Modifier.weight(1f),
+//                placeholder = { Text("Escribe un mensaje...") }
+//            )
+//
+//            Button(
+//                onClick = {
+//                    if (messageText.isNotBlank() && userId != null) {
+//                        Log.d("ChatPage", "Enviando mensaje: $messageText")
+//
+//                        val newMessage = Message(
+//                            uid = UUID.randomUUID().toString(),
+//                            timestamp = System.currentTimeMillis().toString(),
+//                            info = messageText,
+//                            userId = userId,
+//                            userName = userName.orEmpty()
+//                        )
+//
+//                        db.collection("chats").whereEqualTo("uid", chatId).get()
+//                            .addOnSuccessListener { documents ->
+//                                if (!documents.isEmpty) {
+//                                    val chatDocId = documents.documents[0].id
+//                                    db.collection("chats").document(chatDocId)
+//                                        .collection("messages")
+//                                        .document(newMessage.uid)
+//                                        .set(newMessage)
+//                                        .addOnSuccessListener {
+//                                            Log.d("ChatPage", "Mensaje enviado exitosamente: ${newMessage.info}")
+//                                            messageText = ""
+//                                        }
+//                                        .addOnFailureListener { e ->
+//                                            Log.e("ChatPage", "Error al enviar el mensaje", e)
+//                                        }
+//                                }
+//                            }
+//                    } else {
+//                        Log.d("ChatPage", "Mensaje vacío o no hay userId.")
+//                    }
+//                },
+//                modifier = Modifier.padding(start = 8.dp)
+//            ) {
+//                Text("Enviar")
+//            }
+//        }
+//    }
+//}
+//
+//// Componente de burbuja de mensaje
+//@Composable
+//fun MessageBubble(message: Message, currentUserId: String) {
+//    val isCurrentUser = message.userId == currentUserId
+//    val bubbleColor = if (isCurrentUser) Color.Blue else Color.Gray
+//    val alignment = if (isCurrentUser) Alignment.CenterEnd else Alignment.CenterStart
+//
+//    Log.d("MessageBubble", "Mostrando mensaje de: ${message.userName} - ${message.info}")
+//
+//    Box(
+//        modifier = Modifier.fillMaxWidth(),
+//        contentAlignment = alignment
+//    ) {
+//        Column(
+//            modifier = Modifier
+//                .background(bubbleColor, shape = RoundedCornerShape(8.dp))
+//                .padding(8.dp)
+//                .widthIn(max = 250.dp)
+//        ) {
+//            Text(
+//                text = message.userName,
+//                fontSize = 12.sp,
+//                color = Color.White,
+//                fontWeight = FontWeight.Bold
+//            )
+//            Text(
+//                text = message.info,
+//                fontSize = 16.sp,
+//                color = Color.White
+//            )
+//        }
+//    }
+//}
 
 
 //@Composable
@@ -227,39 +415,6 @@ fun ChatPage(navController: NavHostController, chatId: String) {
 //    }
 //}
 
-// Componente de burbuja de mensaje
-@Composable
-fun MessageBubble(message: Message, currentUserId: String) {
-    val isCurrentUser = message.userId == currentUserId
-    val bubbleColor = if (isCurrentUser) Color.Blue else Color.Gray
-    val alignment = if (isCurrentUser) Alignment.CenterEnd else Alignment.CenterStart
-
-    Log.d("MessageBubble", "Mostrando mensaje de: ${message.userName} - ${message.info}")
-
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = alignment
-    ) {
-        Column(
-            modifier = Modifier
-                .background(bubbleColor, shape = RoundedCornerShape(8.dp))
-                .padding(8.dp)
-                .widthIn(max = 250.dp)
-        ) {
-            Text(
-                text = message.userName,
-                fontSize = 12.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = message.info,
-                fontSize = 16.sp,
-                color = Color.White
-            )
-        }
-    }
-}
 
 //import android.content.Context
 //import android.util.Log
