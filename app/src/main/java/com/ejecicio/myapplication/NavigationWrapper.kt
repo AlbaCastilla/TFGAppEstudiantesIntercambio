@@ -1,5 +1,6 @@
 package com.ejecicio.myapplication
 
+import ChatPage
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -16,7 +17,7 @@ import com.ejecicio.myapplication.scenes.activities.AddActivityScreen
 import com.ejecicio.myapplication.scenes.activities.FullActivity
 import com.ejecicio.myapplication.scenes.authentication.LoginScreen
 import com.ejecicio.myapplication.scenes.authentication.RegisterScreen
-import com.ejecicio.myapplication.scenes.messages.ChatPage
+
 import com.ejecicio.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
