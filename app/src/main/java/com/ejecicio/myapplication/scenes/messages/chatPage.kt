@@ -7,9 +7,12 @@ import com.google.firebase.firestore.QuerySnapshot
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,123 +28,123 @@ import com.ejecicio.myapplication.scenes.messages.Message
 import com.google.firebase.firestore.Query
 import java.util.UUID
 
-@Composable
-fun ChatPage(navController: NavHostController, chatId: String) {
-    val db = FirebaseFirestore.getInstance()
-    val context = LocalContext.current
-    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-    val userId = sharedPreferences.getString("userId", null)
-    val userName = sharedPreferences.getString("userName", "Unknown")
-
-    var messages by remember { mutableStateOf(listOf<Message>()) }
-    var messageText by remember { mutableStateOf("") }
-
-    Log.d("ChatPage", "Usando chatId: $chatId")
-
-    LaunchedEffect(chatId) {
-        db.collection("chats").whereEqualTo("uid", chatId).get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    val chatDocId = documents.documents[0].id
-                    db.collection("chats").document(chatDocId)
-                        .collection("messages")
-                        .orderBy("timestamp")
-                        .addSnapshotListener { snapshot, e ->
-                            if (e != null) {
-                                Log.e("ChatPage", "Error al cargar los mensajes", e)
-                                return@addSnapshotListener
-                            }
-
-                            if (snapshot != null) {
-                                Log.d("ChatPage", "Mensajes cargados: ${snapshot.documents.size}")
-                            }
-                            messages = snapshot?.documents?.mapNotNull { doc ->
-                                val timestamp = doc.getString("timestamp") ?: ""
-                                doc.toObject(Message::class.java)?.copy(timestamp = timestamp)
-                            } ?: emptyList()
-
-                            Log.d("ChatPage", "Mensajes actuales: $messages")
-                        }
-                }
-            }
-    }
-
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)
-        .imePadding()  // Ajusta el contenido al teclado
-    ) {
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(messages) { message ->
-                MessageBubble(message = message, currentUserId = userId.orEmpty())
-            }
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                value = messageText,
-                onValueChange = { messageText = it },
-                modifier = Modifier.weight(1f),
-                placeholder = { Text("Escribe un mensaje...") },
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        // Hacer algo cuando el usuario presiona "Enter" o "Done"
-                    }
-                ),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                )
-            )
-
-            Button(
-                onClick = {
-                    if (messageText.isNotBlank() && userId != null) {
-                        Log.d("ChatPage", "Enviando mensaje: $messageText")
-
-                        val newMessage = Message(
-                            uid = UUID.randomUUID().toString(),
-                            timestamp = System.currentTimeMillis().toString(),
-                            info = messageText,
-                            userId = userId,
-                            userName = userName.orEmpty()
-                        )
-
-                        db.collection("chats").whereEqualTo("uid", chatId).get()
-                            .addOnSuccessListener { documents ->
-                                if (!documents.isEmpty) {
-                                    val chatDocId = documents.documents[0].id
-                                    db.collection("chats").document(chatDocId)
-                                        .collection("messages")
-                                        .document(newMessage.uid)
-                                        .set(newMessage)
-                                        .addOnSuccessListener {
-                                            Log.d("ChatPage", "Mensaje enviado exitosamente: ${newMessage.info}")
-                                            messageText = ""
-                                        }
-                                        .addOnFailureListener { e ->
-                                            Log.e("ChatPage", "Error al enviar el mensaje", e)
-                                        }
-                                }
-                            }
-                    } else {
-                        Log.d("ChatPage", "Mensaje vacío o no hay userId.")
-                    }
-                },
-                modifier = Modifier.padding(start = 8.dp)
-            ) {
-                Text("Enviar")
-            }
-        }
-    }
-}
-
-// Componente de burbuja de mensaje
+//@Composable
+//fun ChatPage(navController: NavHostController, chatId: String) {
+//    val db = FirebaseFirestore.getInstance()
+//    val context = LocalContext.current
+//    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+//    val userId = sharedPreferences.getString("userId", null)
+//    val userName = sharedPreferences.getString("userName", "Unknown")
+//
+//    var messages by remember { mutableStateOf(listOf<Message>()) }
+//    var messageText by remember { mutableStateOf("") }
+//
+//    Log.d("ChatPage", "Usando chatId: $chatId")
+//
+//    LaunchedEffect(chatId) {
+//        db.collection("chats").whereEqualTo("uid", chatId).get()
+//            .addOnSuccessListener { documents ->
+//                if (!documents.isEmpty) {
+//                    val chatDocId = documents.documents[0].id
+//                    db.collection("chats").document(chatDocId)
+//                        .collection("messages")
+//                        .orderBy("timestamp")
+//                        .addSnapshotListener { snapshot, e ->
+//                            if (e != null) {
+//                                Log.e("ChatPage", "Error al cargar los mensajes", e)
+//                                return@addSnapshotListener
+//                            }
+//
+//                            if (snapshot != null) {
+//                                Log.d("ChatPage", "Mensajes cargados: ${snapshot.documents.size}")
+//                            }
+//                            messages = snapshot?.documents?.mapNotNull { doc ->
+//                                val timestamp = doc.getString("timestamp") ?: ""
+//                                doc.toObject(Message::class.java)?.copy(timestamp = timestamp)
+//                            } ?: emptyList()
+//
+//                            Log.d("ChatPage", "Mensajes actuales: $messages")
+//                        }
+//                }
+//            }
+//    }
+//
+//    Column(modifier = Modifier
+//        .fillMaxSize()
+//        .padding(16.dp)
+//        .imePadding()  // Ajusta el contenido al teclado
+//    ) {
+//        LazyColumn(
+//            modifier = Modifier.weight(1f),
+//            verticalArrangement = Arrangement.spacedBy(8.dp)
+//        ) {
+//            items(messages) { message ->
+//                MessageBubble(message = message, currentUserId = userId.orEmpty())
+//            }
+//        }
+//
+//        Row(
+//            modifier = Modifier.fillMaxWidth().padding(8.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            OutlinedTextField(
+//                value = messageText,
+//                onValueChange = { messageText = it },
+//                modifier = Modifier.weight(1f),
+//                placeholder = { Text("Escribe un mensaje...") },
+//                keyboardActions = KeyboardActions(
+//                    onDone = {
+//                        // Hacer algo cuando el usuario presiona "Enter" o "Done"
+//                    }
+//                ),
+//                keyboardOptions = KeyboardOptions.Default.copy(
+//                    imeAction = ImeAction.Done
+//                )
+//            )
+//
+//            Button(
+//                onClick = {
+//                    if (messageText.isNotBlank() && userId != null) {
+//                        Log.d("ChatPage", "Enviando mensaje: $messageText")
+//
+//                        val newMessage = Message(
+//                            uid = UUID.randomUUID().toString(),
+//                            timestamp = System.currentTimeMillis().toString(),
+//                            info = messageText,
+//                            userId = userId,
+//                            userName = userName.orEmpty()
+//                        )
+//
+//                        db.collection("chats").whereEqualTo("uid", chatId).get()
+//                            .addOnSuccessListener { documents ->
+//                                if (!documents.isEmpty) {
+//                                    val chatDocId = documents.documents[0].id
+//                                    db.collection("chats").document(chatDocId)
+//                                        .collection("messages")
+//                                        .document(newMessage.uid)
+//                                        .set(newMessage)
+//                                        .addOnSuccessListener {
+//                                            Log.d("ChatPage", "Mensaje enviado exitosamente: ${newMessage.info}")
+//                                            messageText = ""
+//                                        }
+//                                        .addOnFailureListener { e ->
+//                                            Log.e("ChatPage", "Error al enviar el mensaje", e)
+//                                        }
+//                                }
+//                            }
+//                    } else {
+//                        Log.d("ChatPage", "Mensaje vacío o no hay userId.")
+//                    }
+//                },
+//                modifier = Modifier.padding(start = 8.dp)
+//            ) {
+//                Text("Enviar")
+//            }
+//        }
+//    }
+//}
+//
+//// Componente de burbuja de mensaje
 @Composable
 fun MessageBubble(message: Message, currentUserId: String) {
     val isCurrentUser = message.userId == currentUserId
@@ -174,6 +177,237 @@ fun MessageBubble(message: Message, currentUserId: String) {
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+//fun ChatPage(navController: NavHostController, chatId: String) {
+//    val db = FirebaseFirestore.getInstance()
+//    val context = LocalContext.current
+//    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+//    val userId = sharedPreferences.getString("userId", null)
+//    val userName = sharedPreferences.getString("userName", "Unknown")
+//
+//    var messages by remember { mutableStateOf(listOf<Message>()) }
+//    var messageText by remember { mutableStateOf("") }
+//
+//    Log.d("ChatPage", "Usando chatId: $chatId")
+//
+//    LaunchedEffect(chatId) {
+//        db.collection("chats").whereEqualTo("uid", chatId).get()
+//            .addOnSuccessListener { documents ->
+//                if (!documents.isEmpty) {
+//                    val chatDocId = documents.documents[0].id
+//                    db.collection("chats").document(chatDocId)
+//                        .collection("messages")
+//                        .orderBy("timestamp")
+//                        .addSnapshotListener { snapshot, e ->
+//                            if (e != null) {
+//                                Log.e("ChatPage", "Error al cargar los mensajes", e)
+//                                return@addSnapshotListener
+//                            }
+//                            messages = snapshot?.documents?.mapNotNull { doc ->
+//                                val timestamp = doc.getString("timestamp") ?: ""
+//                                doc.toObject(Message::class.java)?.copy(timestamp = timestamp)
+//                            } ?: emptyList()
+//                        }
+//                }
+//            }
+//    }
+//
+//    Column(modifier = Modifier.fillMaxSize()) {
+//        // Barra superior del chat
+//        TopAppBar(
+//            title = { Text(text = "Chat") },
+//            navigationIcon = {
+//                IconButton(onClick = { navController.navigate("messagesPage") }) {
+//                    Icon(Icons.Filled.ArrowBack, contentDescription = "Atrás")
+//                }
+//            },
+//            //backgroundColor = MaterialTheme.colors.primary,
+//            //contentColor = Color.White
+//        )
+//
+//        LazyColumn(
+//            modifier = Modifier.weight(1f).padding(16.dp),
+//            verticalArrangement = Arrangement.spacedBy(8.dp)
+//        ) {
+//            items(messages) { message ->
+//                MessageBubble(message = message, currentUserId = userId.orEmpty())
+//            }
+//        }
+//
+//        Row(
+//            modifier = Modifier.fillMaxWidth().padding(8.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            OutlinedTextField(
+//                value = messageText,
+//                onValueChange = { messageText = it },
+//                modifier = Modifier.weight(1f),
+//                placeholder = { Text("Escribe un mensaje...") },
+//                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+//            )
+//
+//            Button(
+//                onClick = {
+//                    if (messageText.isNotBlank() && userId != null) {
+//                        val newMessage = Message(
+//                            uid = UUID.randomUUID().toString(),
+//                            timestamp = System.currentTimeMillis().toString(),
+//                            info = messageText,
+//                            userId = userId,
+//                            userName = userName.orEmpty()
+//                        )
+//
+//                        db.collection("chats").whereEqualTo("uid", chatId).get()
+//                            .addOnSuccessListener { documents ->
+//                                if (!documents.isEmpty) {
+//                                    val chatDocId = documents.documents[0].id
+//                                    db.collection("chats").document(chatDocId)
+//                                        .collection("messages")
+//                                        .document(newMessage.uid)
+//                                        .set(newMessage)
+//                                        .addOnSuccessListener { messageText = "" }
+//                                        .addOnFailureListener { e -> Log.e("ChatPage", "Error al enviar mensaje", e) }
+//                                }
+//                            }
+//                    }
+//                },
+//                modifier = Modifier.padding(start = 8.dp)
+//            ) {
+//                Text("Enviar")
+//            }
+//        }
+//    }
+//}
+
+
+fun ChatPage(navController: NavHostController, chatId: String) {
+    val db = FirebaseFirestore.getInstance()
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+    val userId = sharedPreferences.getString("userId", null)
+    val userName = sharedPreferences.getString("userName", "Unknown")
+
+    var messages by remember { mutableStateOf(listOf<Message>()) }
+    var messageText by remember { mutableStateOf("") }
+
+    // Estado de la lista
+    val listState = rememberLazyListState()
+
+    Log.d("ChatPage", "Usando chatId: $chatId")
+
+    LaunchedEffect(chatId) {
+        db.collection("chats").whereEqualTo("uid", chatId).get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val chatDocId = documents.documents[0].id
+                    db.collection("chats").document(chatDocId)
+                        .collection("messages")
+                        .orderBy("timestamp", Query.Direction.ASCENDING) // Ordena por fecha ascendente
+                        .addSnapshotListener { snapshot, e ->
+                            if (e != null) {
+                                Log.e("ChatPage", "Error al cargar los mensajes", e)
+                                return@addSnapshotListener
+                            }
+                            messages = snapshot?.documents?.mapNotNull { doc ->
+                                val timestamp = doc.getString("timestamp") ?: ""
+                                doc.toObject(Message::class.java)?.copy(timestamp = timestamp)
+                            } ?: emptyList()
+                        }
+                }
+            }
+    }
+
+    // Desplazamiento hacia el final de la lista cuando los mensajes cambian
+    LaunchedEffect(messages) {
+        if (messages.isNotEmpty()) {
+            listState.animateScrollToItem(messages.size - 1)
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Chat") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("messagesPage") }) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Atrás")
+                    }
+                }
+            )
+        },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .imePadding() // Asegura que el contenido se ajusta cuando el teclado aparece
+            ) {
+                // Lista de mensajes
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(messages) { message ->
+                        MessageBubble(message = message, currentUserId = userId.orEmpty())
+                    }
+                }
+
+                // Barra de entrada de texto
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = messageText,
+                        onValueChange = { messageText = it },
+                        modifier = Modifier.weight(1f),
+                        placeholder = { Text("Escribe un mensaje...") },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+                    )
+
+                    Button(
+                        onClick = {
+                            if (messageText.isNotBlank() && userId != null) {
+                                val newMessage = Message(
+                                    uid = UUID.randomUUID().toString(),
+                                    timestamp = System.currentTimeMillis().toString(),
+                                    info = messageText,
+                                    userId = userId,
+                                    userName = userName.orEmpty()
+                                )
+
+                                db.collection("chats").whereEqualTo("uid", chatId).get()
+                                    .addOnSuccessListener { documents ->
+                                        if (!documents.isEmpty) {
+                                            val chatDocId = documents.documents[0].id
+                                            db.collection("chats").document(chatDocId)
+                                                .collection("messages")
+                                                .document(newMessage.uid)
+                                                .set(newMessage)
+                                                .addOnSuccessListener { messageText = "" }
+                                                .addOnFailureListener { e -> Log.e("ChatPage", "Error al enviar mensaje", e) }
+                                        }
+                                    }
+                            }
+                        },
+                        modifier = Modifier.padding(start = 8.dp)
+                    ) {
+                        Text("Enviar")
+                    }
+                }
+            }
+        }
+    )
+}
+
+
+
 
 //@Composable
 //fun ChatPage(navController: NavHostController, chatId: String) {
