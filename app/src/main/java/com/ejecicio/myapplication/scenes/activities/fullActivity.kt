@@ -1065,6 +1065,7 @@ fun FullActivity(navController: NavHostController) {
                                         if (!querySnapshot.isEmpty) {
                                             val chatDoc = querySnapshot.documents.first()
                                             val chatId = chatDoc.id
+                                            val chatIdString = chatDoc["uid"] as? List<String> ?: emptyList()//chatDoc.id
                                             val currentParticipants = chatDoc["participants"] as? List<String> ?: emptyList()
                                             if (!currentParticipants.contains(uid)) {
                                                 val updatedParticipants = currentParticipants + uid

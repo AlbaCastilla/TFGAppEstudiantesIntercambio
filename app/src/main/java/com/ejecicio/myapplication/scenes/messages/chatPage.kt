@@ -177,8 +177,7 @@ fun MessageBubble(message: Message, currentUserId: String) {
         }
     }
 }
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
+
 //fun ChatPage(navController: NavHostController, chatId: String) {
 //    val db = FirebaseFirestore.getInstance()
 //    val context = LocalContext.current
@@ -280,7 +279,8 @@ fun MessageBubble(message: Message, currentUserId: String) {
 //    }
 //}
 
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun ChatPage(navController: NavHostController, chatId: String) {
     val db = FirebaseFirestore.getInstance()
     val context = LocalContext.current

@@ -65,6 +65,11 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.auth.ktx)
+    implementation("androidx.compose.material:material-icons-extended:1.5.1") // or whatever version you're using
+    implementation(libs.androidx.benchmark.macro)
+    implementation(libs.androidx.ui.test.android)
+    implementation(libs.androidx.ui.test.android)
+    implementation(libs.androidx.ui.test.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
