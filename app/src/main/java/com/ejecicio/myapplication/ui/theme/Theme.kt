@@ -55,8 +55,8 @@ private val LightColorScheme = lightColorScheme(
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = esnBlueDark,
-    secondary = esnLightBlueDark, // Replaced orange dark with a light blue for dark mode
+    primary = esnLightBlueDark,
+    secondary = esnBlueDark, // Replaced orange dark with a light blue for dark mode
     tertiary = esnSurfaceDark,
     background = esnDarkGray,
     surface = esnSurfaceDark,
