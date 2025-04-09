@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.ejecicio.myapplication.scenes.messages.Chat
+import com.ejecicio.myapplication.scenes.messages.Message
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
@@ -335,13 +337,55 @@ fun AddActivityScreen(navController: NavHostController) {
 
                     db.collection("activities")
                         .add(newActivity)
-                        .addOnSuccessListener {
-                            Toast.makeText(context, "Activity created successfully!", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack() // Navigate back
+                        .addOnSuccessListener { activityDocument ->
+                            // La actividad se ha creado con éxito, ahora creamos el Chat
+                            val newChat = Chat(
+                                uid = UUID.randomUUID().toString(),
+                                activity = activityDocument.id, // ID de la actividad recién creada
+                                creator = creator,
+                                participants = listOf(creator)
+                            )
+
+                            db.collection("chats")
+                                .add(newChat)
+                                .addOnSuccessListener { chatDocumentRef ->
+                                    // Fetch the user's name from the 'users' collection
+                                    db.collection("users").document(creator)
+                                        .get()
+                                        .addOnSuccessListener { userDocument ->
+                                            val userName = userDocument.getString("name") ?: "Undefined"
+
+                                            // Crear el primer mensaje de bienvenida en la subcolección "messages" dentro del Chat
+                                            val welcomeMessage = Message(
+                                                uid = UUID.randomUUID().toString(),
+                                                timestamp = System.currentTimeMillis().toString(),
+                                                info = "Welcome to the chat!",
+                                                userId = creator,
+                                                userName = userName // Set the name of the creator as userName
+                                            )
+
+                                            chatDocumentRef.collection("messages")
+                                                .add(welcomeMessage)
+                                                .addOnSuccessListener {
+                                                    Toast.makeText(context, "Activity, Chat y Mensaje creados con éxito!", Toast.LENGTH_SHORT).show()
+                                                    navController.popBackStack() // Navegar hacia atrás
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(context, "Error creando mensaje: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(context, "Error obteniendo el nombre del usuario: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(context, "Error creando el Chat: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
                         }
                         .addOnFailureListener { e ->
-                            Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Error creando la Actividad: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
+
                 } else {
                     Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
                 }
@@ -351,5 +395,116 @@ fun AddActivityScreen(navController: NavHostController) {
         ) {
             Text("Create Activity")
         }
-    }
-}
+
+//        Button(
+//            onClick = {
+//                if (creator != null) {
+//                    // Get the selected date and time from the calendar
+//                    val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
+//                    val formattedTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(calendar.time)
+//
+//                    val newActivity = Activity(
+//                        uid = UUID.randomUUID().toString(),
+//                        title = title,
+//                        category = category,
+//                        description = description,
+//                        price = price.toFloat(),
+//                        maxPeople = maxPeople.toInt(),
+//                        date = formattedDate,
+//                        time = formattedTime,
+//                        duration = duration,
+//                        locationLink = locationLink,
+//                        otherInfo = otherInfo,
+//                        creator = creator // Use the logged-in user's ID
+//                    )
+//
+////                    db.collection("activities")
+////                        .add(newActivity)
+////                        .addOnSuccessListener {
+////                            Toast.makeText(context, "Activity created successfully!", Toast.LENGTH_SHORT).show()
+////                            navController.popBackStack() // Navigate back
+////                        }
+////                        .addOnFailureListener { e ->
+////                            Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+////                        }
+//                    // Add the Activity to Firestore
+////                    db.collection("activities")
+////                        .add(newActivity)
+////                        .addOnSuccessListener { activityDocument ->
+////                            // Successfully added the activity, now create a Chat object
+////                            val newChat = Chat(
+////                                uid = UUID.randomUUID().toString(),
+////                                activity = activityDocument.id, // Use Firestore's generated activity ID
+////                                creator = creator,
+////                                participants = listOf(creator)
+////                            )
+////
+////                            // Add the Chat to Firestore
+////                            db.collection("chats")
+////                                .add(newChat)
+////                                .addOnSuccessListener {
+////                                    Toast.makeText(context, "Activity and Chat created successfully!", Toast.LENGTH_SHORT).show()
+////                                    navController.popBackStack() // Navigate back
+////                                }
+////                                .addOnFailureListener { e ->
+////                                    Toast.makeText(context, "Error creating Chat: ${e.message}", Toast.LENGTH_SHORT).show()
+////                                }
+////                        }
+////                        .addOnFailureListener { e ->
+////                            Toast.makeText(context, "Error creating Activity: ${e.message}", Toast.LENGTH_SHORT).show()
+////                        }
+//                    db.collection("activities")
+//                        .add(newActivity)
+//                        .addOnSuccessListener { activityDocument ->
+//                            // La actividad se ha creado con éxito, ahora creamos el Chat
+//                            val newChat = Chat(
+//                                uid = UUID.randomUUID().toString(),
+//                                activity = activityDocument.id, // ID de la actividad recién creada
+//                                creator = creator,
+//                                participants = listOf(creator)
+//                            )
+//
+//                            db.collection("chats")
+//                                .add(newChat)
+//                                .addOnSuccessListener { chatDocumentRef -> // Referencia al nuevo chat
+//                                    val chatId = chatDocumentRef.id
+//
+//
+//                                    // Crear el primer mensaje de bienvenida en la subcolección "messages" dentro del Chat
+//                                    val welcomeMessage = Message(
+//                                        uid = UUID.randomUUID().toString(),
+//                                        timestamp = System.currentTimeMillis().toString(), // Timestamp compatible con Firestore
+//                                        info = "Welcome to the chat!", // Mensaje de bienvenida
+//                                        userId = creator, // El creador envía el mensaje
+//                                        userName = "Undefined" // Puedes cambiarlo al nombre del creador si prefieres
+//                                    )
+//
+//                                    chatDocumentRef.collection("messages")
+//                                        .add(welcomeMessage)
+//                                        .addOnSuccessListener {
+//                                            Toast.makeText(context, "Activity, Chat y Mensaje creados con éxito!", Toast.LENGTH_SHORT).show()
+//                                            navController.popBackStack() // Navegar hacia atrás
+//                                        }
+//                                        .addOnFailureListener { e ->
+//                                            Toast.makeText(context, "Error creando mensaje: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                        }
+//                                }
+//                                .addOnFailureListener { e ->
+//                                    Toast.makeText(context, "Error creando el Chat: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                }
+//                        }
+//                        .addOnFailureListener { e ->
+//                            Toast.makeText(context, "Error creando la Actividad: ${e.message}", Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                } else {
+//                    Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
+//                }
+//            },
+//            enabled = isFormValid,
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//            Text("Create Activity")
+//        }
+//    }
+}}
