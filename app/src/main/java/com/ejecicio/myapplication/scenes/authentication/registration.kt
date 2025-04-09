@@ -775,7 +775,7 @@ fun RegisterScreen(navController: NavController) {
                                         uid = auth.currentUser?.uid ?: "",
                                         name = name,
                                         lastname = lastname,
-                                        age = age.toInt(),
+                                        age = age.toIntOrNull() ?: 0,
                                         email = email,
                                         university = selectedUniversity,
                                         role = "Student",

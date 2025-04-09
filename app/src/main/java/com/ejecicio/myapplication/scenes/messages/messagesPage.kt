@@ -126,6 +126,7 @@
 package com.ejecicio.myapplication.scenes.messages
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -323,6 +324,112 @@ fun MessagesPage(navController: NavHostController) {
     }
 }
 
+@Composable
+fun ChatCard(uid: String, navController: NavHostController) {
+    // Firestore instance
+    val db = FirebaseFirestore.getInstance()
+
+    // State to store the activity title
+    var activityTitle by remember { mutableStateOf("Loading...") }
+
+    // Fetch activity title when the chat UID is passed
+    LaunchedEffect(uid) {
+        Log.d("ChatCard", "LaunchedEffect triggered with UID: $uid")
+
+        // Get the chat document to retrieve the activity UID
+        db.collection("chats")
+            .document(uid)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.d("ChatCard", "Document fetched: ${document.id} ") // Log entire document
+                val activityUid = document.getString("activity")
+                Log.d("Activity id", "Activity id fetched: $activityUid") // Log activity UID
+
+                if (!activityUid.isNullOrEmpty()) {
+                    // Log the chat UID and the activity UID for debugging
+                    Log.d("ChatCard", "Chat UID: $uid, Activity UID: $activityUid")
+
+                    // Retrieve the activity title using the activity UID
+                    db.collection("activities")
+                        .whereEqualTo("chatId", activityUid) // Use chatId instead of document ID
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            if (!querySnapshot.isEmpty) {
+                                val title = querySnapshot.documents[0].getString("title")
+                                Log.d("ChatCard", "Activity Title fetched: $title")
+                                activityTitle = title ?: "Unknown Activity"
+                            } else {
+                                Log.d("ChatCard", "No matching activity found")
+                                activityTitle = "No Activity Found"
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("ChatCard", "Error fetching activity document: ", e)
+                            activityTitle = "Error loading activity"
+                        }
+
+                } else {
+                    Log.d("ChatCard", "No Activity UID found")
+                    activityTitle = "No Activity Linked"
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("ChatCard", "Error fetching chat document: ", e)
+                activityTitle = "Error loading chat"
+            }
+    }
+
+
+    // Card to display the activity title
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp)
+            .clickable { navController.navigate("chatPage/$uid") }, // Navigate to the chat page with the chat ID
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Activity: $activityTitle",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+        }
+    }
+}
+
+
+//@Composable
+//fun ChatCard(uid: String, navController: NavHostController) {
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 8.dp)
+//            .clickable { navController.navigate("chatPage/$uid") }, // Navegar al chat con ID
+//        colors = CardDefaults.cardColors(containerColor = Color.White),
+//        elevation = CardDefaults.cardElevation(4.dp)
+//    ) {
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp)
+//        ) {
+//            Text(
+//                text = "Chat UID: $uid",
+//                fontSize = 16.sp,
+//                fontWeight = FontWeight.Medium,
+//                color = Color.Black
+//            )
+//        }
+//    }
+//}
+
 //@Composable
 //fun ChatCard(uid: String) {
 //    Card(
@@ -348,29 +455,4 @@ fun MessagesPage(navController: NavHostController) {
 //        }
 //    }
 //}
-
-@Composable
-fun ChatCard(uid: String, navController: NavHostController) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)
-            .clickable { navController.navigate("chatPage/$uid") }, // Navegar al chat con ID
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Chat UID: $uid",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.Black
-            )
-        }
-    }
-}
 
