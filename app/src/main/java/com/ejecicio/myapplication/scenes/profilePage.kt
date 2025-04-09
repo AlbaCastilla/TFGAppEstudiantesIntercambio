@@ -2,22 +2,30 @@ package com.ejecicio.myapplication.scenes
 
 import android.content.Context
 import android.widget.Toast
+import androidx.benchmark.perfetto.Row
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -40,6 +48,17 @@ import com.ejecicio.myapplication.components.FloatingBottomNavBar
 import com.ejecicio.myapplication.ui.theme.MyApplicationTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.runtime.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,6 +121,7 @@ fun ProfilePage(navController: NavHostController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
+                    Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         "Profile",
                         style = MaterialTheme.typography.headlineMedium,
@@ -110,58 +130,89 @@ fun ProfilePage(navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-//                    @Composable
-//                    fun profileField(value: String, onValueChange: (String) -> Unit, label: String, enabled: Boolean = true, keyboardType: KeyboardType = KeyboardType.Text) {
-//                        OutlinedTextField(
-//                            value = value,
-//                            onValueChange = onValueChange,
-//                            label = { Text(label) },
-//                            enabled = enabled,
-//                            shape = RoundedCornerShape(8.dp),
-//                            colors = textFieldColors, // Use dynamic colors here
-//                            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-//                            textStyle = TextStyle(
-//                                color = MaterialTheme.colorScheme.onSurface // Text color will now adapt based on the theme
-//                            ),
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(vertical = 4.dp)
-//                        )
-//                    }
-@Composable
-fun profileField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    enabled: Boolean = true,
-    keyboardType: KeyboardType = KeyboardType.Text
-) {
-    val textColor = if (enabled) {
-        MaterialTheme.colorScheme.onSurface // or any custom color for enabled
-    } else {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f) // dimmed for disabled
-    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = { Text(label) },
-        enabled = enabled,
-        shape = RoundedCornerShape(8.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-            focusedLabelColor = MaterialTheme.colorScheme.primary,
-            unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-            disabledBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-        ),
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        textStyle = TextStyle(color = textColor),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    )
-}
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Text(
+                            text = if (isDarkMode) "Dark Mode" else "Light Mode",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.LightMode,
+                            contentDescription = "Light Mode",
+                            tint = if (!isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        // The switch
+                        Switch(
+                            checked = isDarkMode,
+                            onCheckedChange = { isDarkMode = it },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                                uncheckedThumbColor = MaterialTheme.colorScheme.primary,
+                                checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                                uncheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Icon(
+                            imageVector = Icons.Filled.DarkMode,
+                            contentDescription = "Dark Mode",
+                            tint = if (!isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+
+
+
+                    @Composable
+                    fun profileField(
+                        value: String,
+                        onValueChange: (String) -> Unit,
+                        label: String,
+                        enabled: Boolean = true,
+                        keyboardType: KeyboardType = KeyboardType.Text
+                    ) {
+                        val textColor = if (enabled) {
+                            MaterialTheme.colorScheme.onSurface // or any custom color for enabled
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f) // dimmed for disabled
+                        }
+
+                        OutlinedTextField(
+                            value = value,
+                            onValueChange = onValueChange,
+                            label = { Text(label) },
+                            enabled = enabled,
+                            shape = RoundedCornerShape(8.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(
+                                    alpha = 0.5f
+                                ),
+                                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                disabledBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                            ),
+                            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                            textStyle = TextStyle(color = textColor),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        )
+                    }
 
 
 
@@ -184,10 +235,15 @@ fun profileField(
                             currentUser?.uid?.let { uid ->
                                 dbFirestore.collection("users").document(uid).update(updatedUser)
                                     .addOnSuccessListener {
-                                        Toast.makeText(context, "Profile Updated", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            "Profile Updated",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                     .addOnFailureListener {
-                                        Toast.makeText(context, "Update Failed", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, "Update Failed", Toast.LENGTH_SHORT)
+                                            .show()
                                     }
                             }
                         },
@@ -203,12 +259,6 @@ fun profileField(
                         Text("Save Changes")
                     }
 
-                    TextButton(
-                        onClick = { isDarkMode = !isDarkMode },
-                        modifier = Modifier.padding(top = 12.dp)
-                    ) {
-                        Text("Toggle Light/Dark Mode", color = MaterialTheme.colorScheme.primary)
-                    }
                 }
 
                 FloatingBottomNavBar(
@@ -219,4 +269,5 @@ fun profileField(
                 )
             }
         }
-    }}
+    }
+}
