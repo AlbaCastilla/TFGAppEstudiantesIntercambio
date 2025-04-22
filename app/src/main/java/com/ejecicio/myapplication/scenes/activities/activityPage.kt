@@ -169,7 +169,6 @@ fun ActivityPage(navController: NavHostController) {
 
     val expandedCategories = remember { mutableStateMapOf<String, Boolean>() }
 
-    // Fetch data from Firebase
     LaunchedEffect(Unit) {
         val db = FirebaseFirestore.getInstance()
         db.collection("activities")
