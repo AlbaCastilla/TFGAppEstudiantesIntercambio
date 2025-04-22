@@ -634,8 +634,10 @@ fun RegisterScreen(navController: NavController) {
                     val universityName = document.getString("nombre")
                     val emailEndings = mutableListOf<String>()
 
-                    document.getString("correo_admin")?.substringAfter('@')?.let { emailEndings.add(it) }
+                    //document.getString("correo_admin")?.substringAfter('@')?.let { emailEndings.add(it) }
                     document.getString("correo_estudiantes")?.substringAfter('@')?.let { emailEndings.add(it) }
+                    /// AHORA MISMO SOLO HABILITADO PARA ESTUDIANTES
+
 
                     if (universityName != null) {
                         fetchedUniversities.add(Pair(universityName, emailEndings))
@@ -664,18 +666,28 @@ fun RegisterScreen(navController: NavController) {
         TextField(value = lastname, onValueChange = { lastname = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
         Spacer(modifier = Modifier.height(10.dp))
 
+        var ageError by remember { mutableStateOf(false) }
         TextField(
             value = age,
             onValueChange = {
-                if (it.toIntOrNull() in 17..95 || it.isEmpty()) {
-                    age = it
-                }
+                age = it
+                ageError = it.toIntOrNull()?.let { it !in 17..95 } ?: false
             },
             label = { Text("Age") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            isError = ageError // Muestra error visual si es necesario
         )
+
+        if (ageError) {
+            Text(
+                text = "Age must be between 17 and 95",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -763,7 +775,7 @@ fun RegisterScreen(navController: NavController) {
                                         uid = auth.currentUser?.uid ?: "",
                                         name = name,
                                         lastname = lastname,
-                                        age = age.toInt(),
+                                        age = age.toIntOrNull() ?: 0,
                                         email = email,
                                         university = selectedUniversity,
                                         role = "Student",
@@ -777,10 +789,17 @@ fun RegisterScreen(navController: NavController) {
                                         .set(user)
                                         .addOnSuccessListener {
                                             Toast.makeText(context, "User Registered Successfully", Toast.LENGTH_SHORT).show()
+
+                                            // Navigate to ActivityPage
+                                            navController.navigate("login") {
+                                                popUpTo("RegisterScreen") { inclusive = true }
+                                            }
+
                                         }
                                         .addOnFailureListener { e ->
                                             Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                                         }
+
                                 } else {
                                     Toast.makeText(context, "Authentication Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                                 }
