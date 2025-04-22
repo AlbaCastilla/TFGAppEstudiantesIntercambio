@@ -43,7 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 //    onSurface = black
 private val LightColorScheme = lightColorScheme(
     primary = esnBlue,
-    secondary = esnAccentBlue, // Replaced orange with accent blue
+    secondary = esnAccentBlue,
     tertiary = esnSurfaceLight,
     background = esnWhite,
     surface = esnLightGray,
@@ -56,7 +56,7 @@ private val LightColorScheme = lightColorScheme(
 
 private val DarkColorScheme = darkColorScheme(
     primary = esnLightBlueDark,
-    secondary = esnBlueDark, // Replaced orange dark with a light blue for dark mode
+    secondary = esnBlueDark,
     tertiary = esnSurfaceDark,
     background = esnDarkGray,
     surface = esnSurfaceDark,

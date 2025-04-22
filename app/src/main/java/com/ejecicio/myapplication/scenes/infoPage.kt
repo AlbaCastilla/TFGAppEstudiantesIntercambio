@@ -18,7 +18,6 @@ fun InfoPage(navController: NavHostController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Red box as the main content
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -29,7 +28,6 @@ fun InfoPage(navController: NavHostController) {
             Text(text = "Info Page", color = Color.White)
         }
 
-        // Floating Bottom NavBar
         FloatingBottomNavBar(
             navController = navController, // Pass the navController
             modifier = Modifier
