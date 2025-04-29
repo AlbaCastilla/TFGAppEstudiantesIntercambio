@@ -25,26 +25,26 @@ fun NavigationWrapper(navHostController: NavHostController) {
     NavHost(navController = navHostController, startDestination = "login") {
         composable("infoPage") {
             MyApplicationTheme {
-                InfoPage(navController = navHostController) // Navigate to the InfoPage
+                InfoPage(navController = navHostController)
         }}
 
         composable("activityPage") {
             MyApplicationTheme {
-                ActivityPage(navController = navHostController) // Navigate to the ActivityPage
+                ActivityPage(navController = navHostController)
             }}
         composable("newActivity") {
             MyApplicationTheme {
-                AddActivityScreen(navController = navHostController) // Navigate to the ActivityPage
+                AddActivityScreen(navController = navHostController)
             }}
 
         composable("fullActivity") {
             MyApplicationTheme {
-                FullActivity(navController = navHostController) // Navigate to the ActivityPage
+                FullActivity(navController = navHostController)
             }}
 
         composable("messagesPage") {
             MyApplicationTheme {
-                MessagesPage(navController = navHostController) // Navigate to the ActivityPage
+                MessagesPage(navController = navHostController)
             }}
 
 //        composable("chatPage") {
@@ -52,38 +52,38 @@ fun NavigationWrapper(navHostController: NavHostController) {
 //                ChatPage(navController = navHostController, id:String) // Navigate to the ActivityPage
 //            }}
         composable(
-            "chatPage/{chatId}", // Define the dynamic route
-            arguments = listOf(navArgument("chatId") { type = NavType.StringType }) // Define the argument type
+            "chatPage/{chatId}",
+            arguments = listOf(navArgument("chatId") { type = NavType.StringType })
         ) { backStackEntry ->
             MyApplicationTheme {
                 val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                ChatPage(navController = navHostController, chatId = chatId) // Pass chatId to ChatPage
+                ChatPage(navController = navHostController, chatId = chatId)
             }
         }
 
         composable("profilePage") {
             MyApplicationTheme {
-                ProfilePage(navController = navHostController) // Navigate to the ActivityPage
+                ProfilePage(navController = navHostController)
             }}
 
         composable("forumPage") {
             MyApplicationTheme {
-                ForumPage(navController = navHostController) // Navigate to the ActivityPage
+                ForumPage(navController = navHostController)
             }}
 
         composable("registration") {
             MyApplicationTheme {
-                RegisterScreen(navController = navHostController) // Navigate to the ActivityPage
+                RegisterScreen(navController = navHostController)
             }}
 
         composable("login") {
             MyApplicationTheme {
-                LoginScreen(navController = navHostController) // Navigate to the ActivityPage
+                LoginScreen(navController = navHostController)
             }}
 
           composable("addUniversities") {
             MyApplicationTheme {
-                AddUniversities(navController = navHostController) // Navigate to the ActivityPage
+                AddUniversities(navController = navHostController)
             }}
 
     }

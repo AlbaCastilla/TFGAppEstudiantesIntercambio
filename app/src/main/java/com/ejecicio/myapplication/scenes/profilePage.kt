@@ -154,7 +154,6 @@ fun ProfilePage(navController: NavHostController) {
 
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        // The switch
                         Switch(
                             checked = isDarkMode,
                             onCheckedChange = { isDarkMode = it },
