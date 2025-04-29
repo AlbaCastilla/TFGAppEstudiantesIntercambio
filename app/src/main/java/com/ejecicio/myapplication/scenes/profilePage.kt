@@ -2,62 +2,25 @@ package com.ejecicio.myapplication.scenes
 
 import android.content.Context
 import android.widget.Toast
-import androidx.benchmark.perfetto.Row
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ejecicio.myapplication.components.FloatingBottomNavBar
 import com.ejecicio.myapplication.ui.theme.MyApplicationTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.IconButton
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.runtime.*
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.clickable
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,6 +44,24 @@ fun ProfilePage(navController: NavHostController) {
     var isDarkMode by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(true) }
 
+    LaunchedEffect(userId) {
+        currentUser?.uid?.let { uid ->
+            dbFirestore.collection("users").document(uid).get()
+                .addOnSuccessListener { document ->
+                    name = document.getString("name") ?: ""
+                    lastname = document.getString("lastname") ?: ""
+                    age = document.getLong("age")?.toString() ?: ""
+                    university = document.getString("university") ?: ""
+                    hobbies = document.get("hobbies") as? Set<String> ?: emptySet()
+                    isLoading = false
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "Failed to load profile", Toast.LENGTH_SHORT).show()
+                    isLoading = false
+                }
+        }
+    }
+
     MyApplicationTheme(isDarkMode = isDarkMode) {
         val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -90,183 +71,159 @@ fun ProfilePage(navController: NavHostController) {
             disabledBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
         )
 
-        LaunchedEffect(userId) {
-            currentUser?.uid?.let { uid ->
-                dbFirestore.collection("users").document(uid).get()
-                    .addOnSuccessListener { document ->
-                        name = document.getString("name") ?: ""
-                        lastname = document.getString("lastname") ?: ""
-                        age = document.getLong("age")?.toString() ?: ""
-                        university = document.getString("university") ?: ""
-                        hobbies = document.get("hobbies") as? Set<String> ?: emptySet()
-                        isLoading = false
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(context, "Failed to load profile", Toast.LENGTH_SHORT).show()
-                        isLoading = false
-                    }
-            }
-        }
-
-        MyApplicationTheme(isDarkMode = isDarkMode) {
-            Box(
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
             ) {
-                Column(
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "Profile",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Light/Dark Mode Toggle
+                Row(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        "Profile",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onBackground
+                        text = if (isDarkMode) "Dark Mode" else "Light Mode",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.weight(1f)
                     )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        Text(
-                            text = if (isDarkMode) "Dark Mode" else "Light Mode",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.weight(1f)
+                    Icon(
+                        imageVector = Icons.Filled.LightMode,
+                        contentDescription = "Light Mode",
+                        tint = if (!isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Switch(
+                        checked = isDarkMode,
+                        onCheckedChange = { isDarkMode = it },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                            uncheckedThumbColor = MaterialTheme.colorScheme.primary,
+                            checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                            uncheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                         )
-                        Icon(
-                            imageVector = Icons.Filled.LightMode,
-                            contentDescription = "Light Mode",
-                            tint = if (!isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(24.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        Switch(
-                            checked = isDarkMode,
-                            onCheckedChange = { isDarkMode = it },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = MaterialTheme.colorScheme.primary,
-                                uncheckedThumbColor = MaterialTheme.colorScheme.primary,
-                                checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                                uncheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Icon(
-                            imageVector = Icons.Filled.DarkMode,
-                            contentDescription = "Dark Mode",
-                            tint = if (!isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
-
-
-
-                    @Composable
-                    fun profileField(
-                        value: String,
-                        onValueChange: (String) -> Unit,
-                        label: String,
-                        enabled: Boolean = true,
-                        keyboardType: KeyboardType = KeyboardType.Text
-                    ) {
-                        val textColor = if (enabled) {
-                            MaterialTheme.colorScheme.onSurface // or any custom color for enabled
-                        } else {
-                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f) // dimmed for disabled
-                        }
-
-                        OutlinedTextField(
-                            value = value,
-                            onValueChange = onValueChange,
-                            label = { Text(label) },
-                            enabled = enabled,
-                            shape = RoundedCornerShape(8.dp),
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(
-                                    alpha = 0.5f
-                                ),
-                                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                                disabledBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-                            ),
-                            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-                            textStyle = TextStyle(color = textColor),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                        )
-                    }
-
-
-
-                    profileField(name, { name = it }, "Name")
-                    profileField(lastname, { lastname = it }, "Last Name")
-                    profileField(age, { age = it }, "Age", keyboardType = KeyboardType.Number)
-                    profileField(email, {}, "Email", enabled = false)
-                    profileField(university, {}, "University", enabled = false)
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Button(
-                        onClick = {
-                            val updatedUser = mapOf(
-                                "name" to name,
-                                "lastname" to lastname,
-                                "age" to (age.toIntOrNull() ?: 0),
-                                "hobbies" to hobbies.toList()
-                            )
-                            currentUser?.uid?.let { uid ->
-                                dbFirestore.collection("users").document(uid).update(updatedUser)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(
-                                            context,
-                                            "Profile Updated",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(context, "Update Failed", Toast.LENGTH_SHORT)
-                                            .show()
-                                    }
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary,
-                            contentColor = MaterialTheme.colorScheme.onSecondary
-                        )
-                    ) {
-                        Text("Save Changes")
-                    }
-
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Icon(
+                        imageVector = Icons.Filled.DarkMode,
+                        contentDescription = "Dark Mode",
+                        tint = if (!isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
 
-                FloatingBottomNavBar(
-                    navController = navController,
+                Spacer(modifier = Modifier.height(24.dp))
+
+                @Composable
+                fun profileField(
+                    value: String,
+                    onValueChange: (String) -> Unit,
+                    label: String,
+                    enabled: Boolean = true
+                ) {
+                    OutlinedTextField(
+                        value = value,
+                        onValueChange = onValueChange,
+                        label = { Text(label) },
+                        enabled = enabled,
+                        shape = RoundedCornerShape(8.dp),
+                        colors = textFieldColors,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    )
+                }
+
+                profileField(name, { name = it }, "Name")
+                profileField(lastname, { lastname = it }, "Last Name")
+                profileField(age, { age = it }, "Age")
+                profileField(email, {}, "Email", enabled = false)
+                profileField(university, {}, "University", enabled = false)
+
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                Button(
+                    onClick = {
+                        val updatedUser = mapOf(
+                            "name" to name,
+                            "lastname" to lastname,
+                            "age" to (age.toIntOrNull() ?: 0),
+                            "hobbies" to hobbies.toList()
+                        )
+                        currentUser?.uid?.let { uid ->
+                            dbFirestore.collection("users").document(uid).update(updatedUser)
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        context,
+                                        "Profile Updated",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(context, "Update Failed", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                        }
+                    },
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 16.dp)
-                )
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Save Changes")
+                }
+
+                TextButton(
+                    onClick = {
+                        FirebaseAuth.getInstance().signOut()
+                        navController.navigate("login") {
+                            popUpTo("profile") { inclusive = true }
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(bottom = 70.dp)
+                ) {
+                    Text(
+                        text = "Log Out",
+                        color = Color.White, // Text color
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .background(Color.Red, RoundedCornerShape(8.dp))
+                            .padding(horizontal = 20.dp, vertical = 10.dp)
+                    )
+                }
             }
+            FloatingBottomNavBar(
+                navController = navController,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp)
+            )
         }
+
     }
 }
