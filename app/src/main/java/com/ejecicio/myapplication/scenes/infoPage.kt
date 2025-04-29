@@ -4,22 +4,25 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ejecicio.myapplication.components.FloatingBottomNavBar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.launch
 
-// Data class to hold our section data from the Firestore documents
 data class SectionContent(
     val intro: String = "",
     val reccomendations: String = "",
@@ -29,11 +32,7 @@ data class SectionContent(
 @Composable
 fun InfoPage(navController: NavHostController) {
     val db = FirebaseFirestore.getInstance()
-
-    // Map of section title to its SectionContent data
     val sectionsData = remember { mutableStateMapOf<String, SectionContent>() }
-
-    // List of subcollections you want to fetch
     val sections = listOf(
         "Housing",
         "Transport",
@@ -44,16 +43,18 @@ fun InfoPage(navController: NavHostController) {
         "Emergencies and General Help"
     )
 
-    LaunchedEffect(Unit) {
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
 
+    val sectionIndexMap = remember { mutableStateMapOf<String, Int>() }
+
+    LaunchedEffect(Unit) {
         db.collection("info")
             .whereEqualTo("city", "Madrid")
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {
-                    // Use the first matching document
                     val madridDoc = querySnapshot.documents[0]
-                    // For each section, fetch its data from the respective subcollection
                     for (section in sections) {
                         madridDoc.reference.collection(section)
                             .get()
@@ -83,9 +84,10 @@ fun InfoPage(navController: NavHostController) {
             .background(MaterialTheme.colorScheme.background)
     ) {
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp),
+                .padding(horizontal = 20.dp),
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
             item {
@@ -100,25 +102,88 @@ fun InfoPage(navController: NavHostController) {
                         text = "Madrid",
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        textAlign = TextAlign.Center
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Text(
                         text = "Discover essential recommendations and tips curated for your experience in Madrid.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
+                    //dropdown menu
+                    var expanded by remember { mutableStateOf(false) }
+                    var selectedSection by remember { mutableStateOf("Jump to") }
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            OutlinedButton(
+                                onClick = { expanded = true },
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .height(40.dp)
+                            ) {
+                                Text(selectedSection)
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = "Dropdown Arrow"
+                                )
+                            }
+
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterEnd)
+                            ) {
+                                sections.forEachIndexed { index, section ->
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                text = section,
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier.fillMaxWidth()
+                                            )
+                                        },
+                                        onClick = {
+                                            selectedSection = section
+                                            expanded = false
+                                            coroutineScope.launch {
+                                                val scrollIndex = sectionIndexMap[section]
+                                                if (scrollIndex != null) {
+                                                    listState.animateScrollToItem(scrollIndex)
+                                                }
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Text(
+                            text = "Here is a bit of information to keep in mind and to get you started in your new home!",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                    }
                 }
             }
 
-            // Iterate over each section to display its info (or a Loading message if not ready)
-            items(sections) { section ->
+            itemsIndexed(sections) { index, section ->
+                // Track index for scroll-to-item mapping
+                sectionIndexMap[section] = index + 1 // +1 because header takes position 0
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 8.dp)
+                        .padding(vertical = 8.dp)
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(16.dp)
                 ) {
@@ -127,27 +192,21 @@ fun InfoPage(navController: NavHostController) {
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    if (sectionsData.containsKey(section)) {
-                        val content = sectionsData[section]!!
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    val content = sectionsData[section]
+                    if (content != null) {
                         Text(
                             text = content.intro,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-
                         Spacer(modifier = Modifier.height(12.dp))
-                        Spacer(modifier = Modifier.height(4.dp))
                         content.reccomendations.split("\n").forEach { recommendation ->
                             if (recommendation.isNotEmpty()) {
                                 Row(modifier = Modifier.padding(start = 8.dp)) {
-                                    Text(
-                                        text = "• ",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                                    Text("• ", color = MaterialTheme.colorScheme.onSurfaceVariant)
                                     Text(
                                         text = recommendation.trim(),
                                         style = MaterialTheme.typography.bodyMedium,
@@ -157,13 +216,10 @@ fun InfoPage(navController: NavHostController) {
                                 Spacer(modifier = Modifier.height(4.dp))
                             }
                         }
-
                         Spacer(modifier = Modifier.height(12.dp))
-
-                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = content.tip,
-                            style = MaterialTheme.typography.bodyMedium,
+                            text = "Pro tip: ${content.tip}",
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     } else {
@@ -176,7 +232,9 @@ fun InfoPage(navController: NavHostController) {
                 }
             }
 
-            item { Spacer(modifier = Modifier.height(116.dp)) }
+            item {
+                Spacer(modifier = Modifier.height(116.dp))
+            }
         }
 
         FloatingBottomNavBar(
