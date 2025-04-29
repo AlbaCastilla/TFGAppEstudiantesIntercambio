@@ -11,36 +11,61 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-//    primary = Pink80,
-//    secondary = PurpleGrey80,
-//    tertiary = Pink80
-    primary = darkLightPink,
-    secondary = darkDarkPink,
-    tertiary = darkLightGray,
-    background = darkWhite,
-    surface = darkDarkerGray,
-    onPrimary = darkBlack,
-    onSecondary = darkWhite,
-    onTertiary = darkBlack,
-    onBackground = darkBlack,
-    onSurface = darkBlack
+//private val DarkColorScheme = darkColorScheme(
+////    primary = Pink80,
+////    secondary = PurpleGrey80,
+////    tertiary = Pink80
+//    primary = darkLightPink,
+//    secondary = darkDarkPink,
+//    tertiary = darkLightGray,
+//    background = darkWhite,//en vd es BLACK
+//    surface = darkDarkerGray,
+//    onPrimary = darkBlack,//en vd es WHITE
+//    onSecondary = darkWhite,//en vd es BLACK
+//    onTertiary = darkBlack,//en vd es WHITE
+//    onBackground = darkBlack,//en vd es WHITE
+//    onSurface = darkWhite//en vd es BLACK
+//)
+
+//private val LightColorScheme = lightColorScheme(
+////    primary = Purple40,
+////    secondary = PurpleGrey40,
+////    tertiary = Pink40
+//    primary = lightPink,
+//    secondary = darkPink,
+//    tertiary = lightGray,
+//    background = white,
+//    surface = darkerGray,
+//    onPrimary = black,
+//    onSecondary = white,
+//    onTertiary = black,
+//    onBackground = black,
+//    onSurface = black
+private val LightColorScheme = lightColorScheme(
+    primary = esnBlue,
+    secondary = esnAccentBlue,
+    tertiary = esnSurfaceLight,
+    background = esnWhite,
+    surface = esnLightGray,
+    onPrimary = esnWhite,
+    onSecondary = esnWhite,
+    onTertiary = esnBlack,
+    onBackground = esnBlack,
+    onSurface = esnBlack
 )
 
-private val LightColorScheme = lightColorScheme(
-//    primary = Purple40,
-//    secondary = PurpleGrey40,
-//    tertiary = Pink40
-    primary = lightPink,
-    secondary = darkPink,
-    tertiary = lightGray,
-    background = white,
-    surface = darkerGray,
-    onPrimary = black,
-    onSecondary = white,
-    onTertiary = black,
-    onBackground = black,
-    onSurface = black
+private val DarkColorScheme = darkColorScheme(
+    primary = esnLightBlueDark,
+    secondary = esnBlueDark,
+    tertiary = esnSurfaceDark,
+    background = esnDarkGray,
+    surface = esnSurfaceDark,
+    onPrimary = esnTextLight,
+    onSecondary = esnTextLight,
+    onTertiary = esnTextLight,
+    onBackground = esnTextLight,
+    onSurface = esnTextLight
+)
 
 
     /* Other default colors to override
@@ -52,7 +77,7 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
     */
-)
+
 
 //@Composable
 //fun MyApplicationTheme(

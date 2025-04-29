@@ -33,3 +33,23 @@ val darkLightGray = Color(0xFF8A8787) // Darker version of lightGray
 val darkWhite = Color(0xFF222434) // Dark background for dark mode
 val darkBlack = Color(0xFFFDFCFC) // Light black text for dark mode
 
+
+
+
+
+
+
+/////
+
+val esnBlue = Color(0xFF006F91)
+val esnAccentBlue = Color(0xFF4C9ABF)
+val esnLightGray = Color(0xFFF2F2F2)
+val esnSurfaceLight = Color(0xFFE0E0E0)
+val esnWhite = Color(0xFFFFFFFF)
+val esnBlack = Color(0xFF1E1E1E)
+val esnBlueDark = Color(0xFF005F7A)
+val esnLightBlueDark = Color(0xFF5E9FBE)
+val esnDarkGray = Color(0xFF212121)
+val esnSurfaceDark = Color(0xFF333333)
+val esnTextLight = Color(0xFFE0E0E0)
+val esnTextDark = Color(0xFFB0B0B0)
