@@ -12,7 +12,8 @@ data class User (
     val homeCountry:String = "",
     val homeCity:String = "",
     val description:String = "",
-    val hobbies: List<String> = listOf() // Empty list
+    val hobbies: List<String> = listOf(),
+    val city:String = "",
 
 )
 
