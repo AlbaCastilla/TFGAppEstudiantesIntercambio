@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ejecicio.myapplication.components.FloatingBottomNavBar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.launch
@@ -48,35 +49,82 @@ fun InfoPage(navController: NavHostController) {
 
     val sectionIndexMap = remember { mutableStateMapOf<String, Int>() }
 
+//    LaunchedEffect(Unit) {
+//        db.collection("info")
+//            .whereEqualTo("city", "Madrid")
+//            .get()
+//            .addOnSuccessListener { querySnapshot ->
+//                if (!querySnapshot.isEmpty) {
+//                    val madridDoc = querySnapshot.documents[0]
+//                    for (section in sections) {
+//                        madridDoc.reference.collection(section)
+//                            .get()
+//                            .addOnSuccessListener { sectionSnapshot ->
+//                                val document = sectionSnapshot.documents.firstOrNull()
+//                                if (document != null) {
+//                                    val content = document.toObject<SectionContent>()
+//                                    if (content != null) {
+//                                        sectionsData[section] = content
+//                                    }
+//                                }
+//                            }
+//                            .addOnFailureListener { exception ->
+//                                Log.e("InfoPage", "Error fetching section $section: ${exception.message}")
+//                            }
+//                    }
+//                }
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.e("InfoPage", "Error fetching Madrid info: ${exception.message}")
+//            }
+//    }
     LaunchedEffect(Unit) {
-        db.collection("info")
-            .whereEqualTo("city", "Madrid")
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    val madridDoc = querySnapshot.documents[0]
-                    for (section in sections) {
-                        madridDoc.reference.collection(section)
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val userDocRef = db.collection("users").document(currentUser.uid)
+            userDocRef.get()
+                .addOnSuccessListener { userSnapshot ->
+                    val userCity = userSnapshot.getString("city")
+                    if (!userCity.isNullOrBlank()) {
+                        db.collection("info")
+                            .whereEqualTo("city", userCity)
                             .get()
-                            .addOnSuccessListener { sectionSnapshot ->
-                                val document = sectionSnapshot.documents.firstOrNull()
-                                if (document != null) {
-                                    val content = document.toObject<SectionContent>()
-                                    if (content != null) {
-                                        sectionsData[section] = content
+                            .addOnSuccessListener { querySnapshot ->
+                                if (!querySnapshot.isEmpty) {
+                                    val cityDoc = querySnapshot.documents[0]
+                                    for (section in sections) {
+                                        cityDoc.reference.collection(section)
+                                            .get()
+                                            .addOnSuccessListener { sectionSnapshot ->
+                                                val document = sectionSnapshot.documents.firstOrNull()
+                                                if (document != null) {
+                                                    val content = document.toObject<SectionContent>()
+                                                    if (content != null) {
+                                                        sectionsData[section] = content
+                                                    }
+                                                }
+                                            }
+                                            .addOnFailureListener { exception ->
+                                                Log.e("InfoPage", "Error fetching section $section: ${exception.message}")
+                                            }
                                     }
                                 }
                             }
                             .addOnFailureListener { exception ->
-                                Log.e("InfoPage", "Error fetching section $section: ${exception.message}")
+                                Log.e("InfoPage", "Error fetching info for city $userCity: ${exception.message}")
                             }
+                    } else {
+                        Log.e("InfoPage", "City not found for user ${currentUser.uid}")
                     }
                 }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("InfoPage", "Error fetching Madrid info: ${exception.message}")
-            }
+                .addOnFailureListener { exception ->
+                    Log.e("InfoPage", "Error fetching user data: ${exception.message}")
+                }
+        } else {
+            Log.e("InfoPage", "No user is logged in.")
+        }
     }
+
 
     Box(
         modifier = Modifier

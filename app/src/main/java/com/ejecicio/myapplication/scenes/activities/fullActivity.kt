@@ -917,7 +917,8 @@ fun FullActivity(navController: NavHostController) {
                         locationLink = document.getString("locationLink") ?: "No Link",
                         otherInfo = document.getString("otherInfo") ?: "No Info",
                         peopleAdded = document.getLong("peopleAdded")?.toInt() ?: 0,
-                        creator = creatorUid
+                        creator = creatorUid,
+                        city = document.getString("city")?: "No City",
                     )
 
                     db.collection("users").document(creatorUid).get().addOnSuccessListener { userDocument ->

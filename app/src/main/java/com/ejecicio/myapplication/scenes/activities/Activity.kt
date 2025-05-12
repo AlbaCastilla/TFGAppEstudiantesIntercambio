@@ -17,7 +17,8 @@ data class Activity (
     val locationLink: String,
     val otherInfo: String,
     val peopleAdded: Int = 0,
-    val creator: String
+    val creator: String,
+    val city: String,
 
 )
 

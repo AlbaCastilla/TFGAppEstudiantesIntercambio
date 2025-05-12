@@ -22,19 +22,16 @@ import androidx.navigation.NavHostController
 import com.ejecicio.myapplication.components.FloatingBottomNavBar
 import com.google.firebase.firestore.FirebaseFirestore
 
-//@Composable
-//fun ActivityPage(navController: NavHostController) {
-//    val activities = remember { mutableStateListOf<Map<String, String>>() }
-//    val context = LocalContext.current
-//    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-//    val currentUserId = sharedPreferences.getString("userId", null) ?: ""
-//
-//    val categories =
-//        listOf("Sports/Exercise", "Cultural", "Outdoors", "Crafty", "Music", "Volunteer", "Other")
-//
-//    val expandedCategories = remember { mutableStateMapOf<String, Boolean>() }
-//
-//    // Fetch data from Firebase
+@Composable
+fun ActivityPage(navController: NavHostController) {
+    val activities = remember { mutableStateListOf<Map<String, String>>() }
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+    val currentUserId = sharedPreferences.getString("userId", null) ?: ""
+
+    val categories = listOf("Sports/Exercise", "Cultural", "Outdoors", "Crafty", "Music", "Volunteer", "Other")
+    val expandedCategories = remember { mutableStateMapOf<String, Boolean>() }
+
 //    LaunchedEffect(Unit) {
 //        val db = FirebaseFirestore.getInstance()
 //        db.collection("activities")
@@ -48,8 +45,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 //                            "title" to (document.getString("title") ?: "No Title"),
 //                            "date" to (document.getString("date") ?: "No Date"),
 //                            "time" to (document.getString("time") ?: "No Time"),
-//                            "description" to (document.getString("description")
-//                                ?: "No Description"),
+//                            "description" to (document.getString("description") ?: "No Description"),
 //                            "category" to (document.getString("category") ?: "Other")
 //                        )
 //                        activities.add(data)
@@ -60,139 +56,44 @@ import com.google.firebase.firestore.FirebaseFirestore
 //                Log.e("ActivityPage", "Error fetching activities: ${exception.message}")
 //            }
 //    }
-//
-//    Box(modifier = Modifier.fillMaxSize()) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(16.dp)
-//        ) {
-//            Text(
-//                text = "Activity Page",
-//                color = Color.Black,
-//                style = MaterialTheme.typography.titleMedium
-//            )
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            Button(onClick = { navController.navigate("newActivity") }) {
-//                Text(text = "Add New Activity")
-//            }
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            LazyColumn(
-//                modifier = Modifier.fillMaxSize(),
-//                contentPadding = PaddingValues(vertical = 8.dp)
-//            ) {
-//                categories.forEach { category ->
-//                    item {
-//                        Row(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .clickable {
-//                                    expandedCategories[category] =
-//                                        !(expandedCategories[category] ?: false)
-//                                }
-//                                .padding(vertical = 8.dp),
-//                            verticalAlignment = Alignment.CenterVertically
-//                        ) {
-//                            Text(
-//                                text = category,
-//                                style = MaterialTheme.typography.titleMedium,
-//                                color = Color.Black,
-//                                modifier = Modifier.weight(1f)
-//                            )
-//                            Icon(
-//                                imageVector = if (expandedCategories[category] == true) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-//                                contentDescription = "Expand/Collapse"
-//                            )
-//                        }
-//
-//                        Divider(color = Color.Gray, thickness = 1.dp)
-//                    }
-//
-//                    if (expandedCategories[category] == true) {
-//                        val filteredActivities = activities.filter {
-//                            it["category"]?.equals(category, ignoreCase = true) == true
-//                        }
-//
-//                        if (filteredActivities.isEmpty()) {
-//                            item {
-//                                Text(
-//                                    text = "There are currently no activities for this category.",
-//                                    style = MaterialTheme.typography.bodyMedium,
-//                                    color = Color.Gray,
-//                                    modifier = Modifier.padding(16.dp)
-//                                )
-//                            }
-//                        } else {
-//                            items(filteredActivities) { activity ->
-//                                ActivityCard(
-//                                    title = activity["title"] ?: "",
-//                                    date = activity["date"] ?: "",
-//                                    time = activity["time"] ?: "",
-//                                    description = activity["description"] ?: "",
-//                                    uid = activity["uid"] ?: "",
-//                                    onJoinClick = { selectedUid ->
-//                                        sharedPreferences.edit()
-//                                            .putString("selectedActivityUid", selectedUid).apply()
-//                                        navController.navigate("fullActivity")
-//                                    }
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                item {
-//                    Spacer(modifier = Modifier.height(116.dp))
-//                }
-//            }
-//        }
-//
-//        FloatingBottomNavBar(
-//            navController = navController,
-//            modifier = Modifier
-//                .align(Alignment.BottomCenter)
-//                .padding(bottom = 16.dp)
-//        )
-//    }
-//}
-
-
-@Composable
-fun ActivityPage(navController: NavHostController) {
-    val activities = remember { mutableStateListOf<Map<String, String>>() }
-    val context = LocalContext.current
-    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-    val currentUserId = sharedPreferences.getString("userId", null) ?: ""
-
-    val categories = listOf("Sports/Exercise", "Cultural", "Outdoors", "Crafty", "Music", "Volunteer", "Other")
-    val expandedCategories = remember { mutableStateMapOf<String, Boolean>() }
-
     LaunchedEffect(Unit) {
         val db = FirebaseFirestore.getInstance()
-        db.collection("activities")
+        val usersCollection = db.collection("users")
+
+        // Get the city of the current user
+        usersCollection.document(currentUserId)
             .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val creatorId = document.getString("creator") ?: ""
-                    if (creatorId != currentUserId) {
-                        val data = mapOf(
-                            "uid" to document.id,
-                            "title" to (document.getString("title") ?: "No Title"),
-                            "date" to (document.getString("date") ?: "No Date"),
-                            "time" to (document.getString("time") ?: "No Time"),
-                            "description" to (document.getString("description") ?: "No Description"),
-                            "category" to (document.getString("category") ?: "Other")
-                        )
-                        activities.add(data)
+            .addOnSuccessListener { userDoc ->
+                val userCity = userDoc.getString("city") ?: ""
+
+                // Now get all activities and filter by city
+                db.collection("activities")
+                    .get()
+                    .addOnSuccessListener { result ->
+                        for (document in result) {
+                            val creatorId = document.getString("creator") ?: ""
+                            val activityCity = document.getString("city") ?: ""
+
+                            if (creatorId != currentUserId && activityCity == userCity) {
+                                val data = mapOf(
+                                    "uid" to document.id,
+                                    "title" to (document.getString("title") ?: "No Title"),
+                                    "date" to (document.getString("date") ?: "No Date"),
+                                    "time" to (document.getString("time") ?: "No Time"),
+                                    "description" to (document.getString("description") ?: "No Description"),
+                                    "category" to (document.getString("category") ?: "Other")
+                                )
+                                activities.add(data)
+                            }
+                        }
                     }
-                }
+                    .addOnFailureListener { exception ->
+                        Log.e("ActivityPage", "Error fetching activities: ${exception.message}")
+                    }
+
             }
             .addOnFailureListener { exception ->
-                Log.e("ActivityPage", "Error fetching activities: ${exception.message}")
+                Log.e("ActivityPage", "Error fetching user city: ${exception.message}")
             }
     }
 
@@ -206,88 +107,7 @@ fun ActivityPage(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(20.dp)
         ) {
-//            Text(
-//                text = "Activities",
-//                style = MaterialTheme.typography.headlineMedium,
-//                color = MaterialTheme.colorScheme.onBackground
-//            )
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            Text(
-//                text = "Discover activities created by students like you, from sightseeing tours to casual meetups, and start building friendships that will make your time in Madrid truly unforgettable.",
-//                style = MaterialTheme.typography.bodyLarge,
-//                color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                modifier = Modifier.padding(bottom = 16.dp)
-//            )
 
-//            LazyColumn(
-//                modifier = Modifier.fillMaxSize(),
-//                contentPadding = PaddingValues(vertical = 8.dp)
-//            ) {
-//                categories.forEach { category ->
-//                    item {
-//                        Row(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .clickable {
-//                                    expandedCategories[category] = !(expandedCategories[category] ?: false)
-//                                }
-//                                .padding(vertical = 12.dp),
-//                            verticalAlignment = Alignment.CenterVertically
-//                        ) {
-//                            Text(
-//                                text = category,
-//                                style = MaterialTheme.typography.titleMedium,
-//                                color = MaterialTheme.colorScheme.onSurface,
-//                                modifier = Modifier.weight(1f)
-//                            )
-//                            Icon(
-//                                imageVector = if (expandedCategories[category] == true)
-//                                    Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-//                                contentDescription = "Toggle Category",
-//                                tint = MaterialTheme.colorScheme.primary
-//                            )
-//                        }
-//                        Divider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
-//                    }
-//
-//                    if (expandedCategories[category] == true) {
-//                        val filteredActivities = activities.filter {
-//                            it["category"]?.equals(category, ignoreCase = true) == true
-//                        }
-//
-//                        if (filteredActivities.isEmpty()) {
-//                            item {
-//                                Text(
-//                                    text = "There are currently no activities for this category.",
-//                                    style = MaterialTheme.typography.bodyMedium,
-//                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                                    modifier = Modifier.padding(16.dp)
-//                                )
-//                            }
-//                        } else {
-//                            items(filteredActivities) { activity ->
-//                                ActivityCard(
-//                                    title = activity["title"] ?: "",
-//                                    date = activity["date"] ?: "",
-//                                    time = activity["time"] ?: "",
-//                                    description = activity["description"] ?: "",
-//                                    uid = activity["uid"] ?: "",
-//                                    onJoinClick = { selectedUid ->
-//                                        sharedPreferences.edit()
-//                                            .putString("selectedActivityUid", selectedUid)
-//                                            .apply()
-//                                        navController.navigate("fullActivity")
-//                                    }
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                item { Spacer(modifier = Modifier.height(116.dp)) }
-//            }
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(vertical = 8.dp)
@@ -449,190 +269,3 @@ fun ActivityCard(
         }
     }
 }
-
-//@Composable
-//fun ActivityPage(navController: NavHostController) {
-//    val activities = remember { mutableStateListOf<Map<String, String>>() }
-//    val context = LocalContext.current
-//    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-//    val currentUserId = sharedPreferences.getString("userId", null) ?: ""
-//
-//    val categories = listOf("Sports/Exercise", "Cultural", "Outdoors", "Crafty", "Music", "Volunteer", "Other")
-//
-//    val expandedCategories = remember { mutableStateMapOf<String, Boolean>() }
-//
-//    LaunchedEffect(Unit) {
-//        val db = FirebaseFirestore.getInstance()
-//        db.collection("activities")
-//            .get()
-//            .addOnSuccessListener { result ->
-//                for (document in result) {
-//                    val creatorId = document.getString("creator") ?: ""
-//                    if (creatorId != currentUserId) {
-//                        val data = mapOf(
-//                            "uid" to document.id,
-//                            "title" to (document.getString("title") ?: "No Title"),
-//                            "date" to (document.getString("date") ?: "No Date"),
-//                            "time" to (document.getString("time") ?: "No Time"),
-//                            "description" to (document.getString("description") ?: "No Description"),
-//                            "category" to (document.getString("category") ?: "Other")
-//                        )
-//                        activities.add(data)
-//                    }
-//                }
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.e("ActivityPage", "Error fetching activities: ${exception.message}")
-//            }
-//    }
-//
-//    Box(
-//        modifier = Modifier.fillMaxSize()
-//    ) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(Color.Yellow)
-//                .padding(16.dp)
-//        ) {
-//            Text(
-//                text = "Activity Page",
-//                color = Color.Black,
-//                style = MaterialTheme.typography.titleMedium
-//            )
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            LazyColumn(
-//                modifier = Modifier.fillMaxSize(),
-//                contentPadding = PaddingValues(vertical = 8.dp)
-//            ) {
-//                categories.forEach { category ->
-//                    item {
-//                        Row(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .clickable {
-//                                    expandedCategories[category] = !(expandedCategories[category] ?: false)
-//                                }
-//                                .padding(vertical = 8.dp),
-//                            verticalAlignment = Alignment.CenterVertically
-//                        ) {
-//                            Text(
-//                                text = category,
-//                                style = MaterialTheme.typography.titleMedium,
-//                                color = Color.Black,
-//                                modifier = Modifier.weight(1f)
-//                            )
-//                            Icon(
-//                                imageVector = if (expandedCategories[category] == true) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-//                                contentDescription = "Expand/Collapse"
-//                            )
-//                        }
-//
-//                        Divider(color = Color.Gray, thickness = 1.dp)
-//                    }
-//
-//                    if (expandedCategories[category] == true) {
-//                        val filteredActivities = activities.filter {
-//                            it["category"]?.equals(category, ignoreCase = true) == true
-//                        }
-//
-//                        if (filteredActivities.isEmpty()) {
-//                            item {
-//                                Text(
-//                                    text = "There are currently no activities for this category.",
-//                                    style = MaterialTheme.typography.bodyMedium,
-//                                    color = Color.Gray,
-//                                    modifier = Modifier.padding(16.dp)
-//                                )
-//                            }
-//                        } else {
-//                            items(filteredActivities) { activity ->
-//                                ActivityCard(
-//                                    title = activity["title"] ?: "",
-//                                    date = activity["date"] ?: "",
-//                                    time = activity["time"] ?: "",
-//                                    description = activity["description"] ?: "",
-//                                    uid = activity["uid"] ?: "",
-//                                    onJoinClick = { selectedUid ->
-//                                        sharedPreferences.edit().putString("selectedActivityUid", selectedUid).apply()
-//                                        navController.navigate("fullActivity")
-//                                    }
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                item {
-//                    Spacer(modifier = Modifier.height(116.dp))
-//                }
-//            }
-//        }
-//
-//        // Add New Activity Button (fixed to the top right)
-//        Button(
-//            onClick = { navController.navigate("newActivity") },
-//            modifier = Modifier
-//                .align(Alignment.TopEnd)
-//                .padding(16.dp)
-//        ) {
-//            Text(text = "Add New Activity")
-//        }
-//
-//        FloatingBottomNavBar(
-//            navController = navController,
-//            modifier = Modifier
-//                .align(Alignment.BottomCenter)
-//                .padding(bottom = 16.dp)
-//        )
-//    }
-//}
-//
-//
-//@Composable
-//fun ActivityCard(
-//    title: String,
-//    date: String,
-//    time: String,
-//    description: String,
-//    uid: String,
-//    onJoinClick: (String) -> Unit
-//) {
-//    Card(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 8.dp, vertical = 4.dp),
-//        elevation = CardDefaults.cardElevation(4.dp)
-//    ) {
-//        Column(modifier = Modifier.padding(16.dp)) {
-//            Text(
-//                text = title,
-//                style = MaterialTheme.typography.headlineSmall,
-//                color = Color.Black
-//            )
-//            Spacer(modifier = Modifier.height(8.dp))
-//            Text(
-//                text = "Date: $date",
-//                style = MaterialTheme.typography.bodySmall,
-//                color = Color.Gray
-//            )
-//            Text(
-//                text = "Time: $time",
-//                style = MaterialTheme.typography.bodySmall,
-//                color = Color.Gray
-//            )
-//            Spacer(modifier = Modifier.height(8.dp))
-//            Text(
-//                text = description,
-//                style = MaterialTheme.typography.bodySmall,
-//                color = Color.DarkGray
-//            )
-//            Spacer(modifier = Modifier.height(8.dp))
-//            Button(onClick = { onJoinClick(uid) }) {
-//                Text(text = "View")
-//            }
-//        }
-//    }
-//}
