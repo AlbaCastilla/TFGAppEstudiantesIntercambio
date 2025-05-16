@@ -17,6 +17,7 @@ import com.ejecicio.myapplication.scenes.activities.AddActivityScreen
 import com.ejecicio.myapplication.scenes.activities.FullActivity
 import com.ejecicio.myapplication.scenes.authentication.LoginScreen
 import com.ejecicio.myapplication.scenes.authentication.RegisterScreen
+import com.ejecicio.myapplication.scenes.superAdmin.AdminCtrl
 
 import com.ejecicio.myapplication.ui.theme.MyApplicationTheme
 
@@ -84,6 +85,11 @@ fun NavigationWrapper(navHostController: NavHostController) {
           composable("addUniversities") {
             MyApplicationTheme {
                 AddUniversities(navController = navHostController)
+            }}
+
+        composable("adminCtrl") {
+            MyApplicationTheme {
+                AdminCtrl(navController = navHostController)
             }}
 
     }
