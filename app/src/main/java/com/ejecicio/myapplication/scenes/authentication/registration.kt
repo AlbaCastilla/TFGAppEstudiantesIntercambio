@@ -31,6 +31,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.ejecicio.myapplication.ui.theme.MyApplicationTheme
+import android.app.DatePickerDialog
+import java.util.Calendar
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,7 +65,7 @@ fun RegisterScreen(navController: NavController) {
     val isCitySelected = selectedCity.isNotEmpty()
     val isUniversitySelected = selectedUniversity.isNotEmpty()
     val isFormValid = name.isNotBlank() && lastname.isNotBlank() &&
-            age.toIntOrNull()?.let { it in 17..95 } == true &&
+            !ageError &&
             email.isNotBlank() && password.isNotBlank() &&
             confirmPassword == password && isCitySelected && isUniversitySelected
 
@@ -191,14 +194,38 @@ fun RegisterScreen(navController: NavController) {
                 customTextField(lastname, "Last Name", { lastname = it }, enabled = isCitySelected)
                 Spacer(modifier = Modifier.height(10.dp))
 
-                customTextField(age, "Age", {
-                    age = it
-                    ageError = it.toIntOrNull()?.let { it !in 17..95 } ?: false
-                }, keyboardType = KeyboardType.Number, enabled = isCitySelected, isError = ageError)
+//                customTextField(age, "Age", {
+//                    age = it
+//                    ageError = it.toIntOrNull()?.let { it !in 17..95 } ?: false
+//                }, keyboardType = KeyboardType.Number, enabled = isCitySelected, isError = ageError)
+//
+//                if (ageError) {
+//                    Text("Age must be between 17 and 95", color = MaterialTheme.colorScheme.error)
+//                }
+                val calendar = Calendar.getInstance()
+                val year = calendar.get(Calendar.YEAR)
+                val month = calendar.get(Calendar.MONTH)
+                val day = calendar.get(Calendar.DAY_OF_MONTH)
+                val context = LocalContext.current
+
+                DatePickerField(
+                    date = age,
+                    onDateSelected = { selectedDate ->
+                        age = selectedDate
+                        val birthYear = selectedDate.takeLast(4).toIntOrNull()
+                        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+                        val userAge = if (birthYear != null) currentYear - birthYear else 0
+                        ageError = userAge !in 17..95
+                    },
+                    isEnabled = isCitySelected,
+                    isError = ageError
+                )
 
                 if (ageError) {
-                    Text("Age must be between 17 and 95", color = MaterialTheme.colorScheme.error)
+                    Text("You must be between 17 and 95 years old", color = MaterialTheme.colorScheme.error)
                 }
+
+
 
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -259,7 +286,7 @@ fun RegisterScreen(navController: NavController) {
                                             uid = auth.currentUser?.uid ?: "",
                                             name = name,
                                             lastname = lastname,
-                                            age = age.toIntOrNull() ?: 0,
+                                            age = age,
                                             email = email,
                                             university = selectedUniversity,
                                             city = selectedCity,
@@ -320,4 +347,49 @@ fun RegisterScreen(navController: NavController) {
         }
     }
 }
+
+@Composable
+fun DatePickerField(
+    date: String,
+    onDateSelected: (String) -> Unit,
+    isEnabled: Boolean,
+    isError: Boolean
+) {
+    val context = LocalContext.current
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    if (showDatePicker) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        DatePickerDialog(
+            context,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val formattedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
+                val userAge = year - selectedYear
+                onDateSelected(formattedDate)
+                showDatePicker = false
+            },
+            year,
+            month,
+            day
+        ).show()
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = isEnabled) { showDatePicker = true }
+            .border(1.dp, if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+            .padding(12.dp)
+    ) {
+        Text(
+            text = if (date.isBlank()) "Select Birthdate" else date,
+            color = if (date.isBlank()) Color.Gray else MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
 
