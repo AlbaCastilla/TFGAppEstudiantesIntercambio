@@ -107,15 +107,28 @@ fun LoginScreen(navController: NavHostController) {
                                         db.collection("users").document(userId).get()
                                             .addOnSuccessListener { document ->
                                                 val userName = document.getString("name") ?: "Unknown"
+                                                val role = document.getString("role") ?: "Student"
                                                 with(sharedPreferences.edit()) {
                                                     putString("userId", userId)
                                                     putString("userName", userName)
+                                                    putString("role", role)
                                                     apply()
                                                 }
 
                                                 isLoading = false
-                                                navController.navigate("activityPage") {
-                                                    popUpTo("login") { inclusive = true }
+                                                when (role) {
+                                                    "Student" -> navController.navigate("activityPage") {
+                                                        popUpTo("login") { inclusive = true }
+                                                    }
+                                                    "Super Admin" -> navController.navigate("adminCtrl") {
+                                                        popUpTo("login") { inclusive = true }
+                                                    }
+                                                    "Admin" -> navController.navigate("adminUserPage") {
+                                                        popUpTo("login") { inclusive = true }
+                                                    }
+                                                    else -> {
+                                                        Toast.makeText(context, "Unknown role: $role", Toast.LENGTH_SHORT).show()
+                                                    }
                                                 }
                                             }
                                             .addOnFailureListener {
