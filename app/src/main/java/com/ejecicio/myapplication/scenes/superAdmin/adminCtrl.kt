@@ -278,6 +278,7 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
     var selectedUniversity by remember { mutableStateOf("") }
     var isUniversityDropdownOpen by remember { mutableStateOf(false) }
     var ageError by remember { mutableStateOf(false) }
+    var selectedHobbies by remember { mutableStateOf(setOf<String>()) }
 
     val isFormValid = name.isNotBlank() && lastname.isNotBlank() &&
             age.isNotBlank() && !ageError &&
@@ -447,48 +448,9 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
         )
         Spacer(modifier = Modifier.height(20.dp))
 
-//        Button(
-//            onClick = {
-//                if (!isFormValid) {
-//                    Toast.makeText(context, "Please fill all fields correctly", Toast.LENGTH_SHORT).show()
-//                    return@onClick
-//                }
-//
-//                auth.createUserWithEmailAndPassword(email, password)
-//                    .addOnSuccessListener { result ->
-//                        val userId = result.user?.uid ?: return@addOnSuccessListener
-//                        val studentData = hashMapOf(
-//                            "name" to name,
-//                            "lastname" to lastname,
-//                            "birthdate" to age,
-//                            "email" to email,
-//                            "role" to selectedRole,
-//                            "city" to selectedCity,
-//                            "university" to selectedUniversity
-//                        )
-//
-//                        db.collection("users").document(userId)
-//                            .set(studentData)
-//                            .addOnSuccessListener {
-//                                Toast.makeText(context, "Student Registered", Toast.LENGTH_SHORT).show()
-//                                navController.popBackStack()
-//                            }
-//                            .addOnFailureListener {
-//                                Toast.makeText(context, "Firestore error: ${it.message}", Toast.LENGTH_SHORT).show()
-//                            }
-//                    }
-//                    .addOnFailureListener {
-//                        Toast.makeText(context, "Auth error: ${it.message}", Toast.LENGTH_SHORT).show()
-//                    }
-//            },
-//            enabled = isFormValid,
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Text("Register Student")
-//        }
         Button(
             onClick = {
-                // etiqueta para usar return correctamente
+
                 val clickHandler = run {
                     if (!isFormValid) {
                         Toast.makeText(context, "Please fill all fields correctly", Toast.LENGTH_SHORT).show()
@@ -499,13 +461,18 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
                         .addOnSuccessListener { result ->
                             val userId = result.user?.uid ?: return@addOnSuccessListener
                             val studentData = hashMapOf(
+                                "uid" to userId,
                                 "name" to name,
                                 "lastname" to lastname,
                                 "birthdate" to age,
                                 "email" to email,
                                 "role" to selectedRole,
                                 "city" to selectedCity,
-                                "university" to selectedUniversity
+                                "university" to selectedUniversity,
+                                "homeCountry" to "",
+                                "homeCity" to "",
+                                "description" to "",
+                                "hobbies" to selectedHobbies.toList()
                             )
 
                             db.collection("users").document(userId)
