@@ -120,10 +120,10 @@ fun LoginScreen(navController: NavHostController) {
                                                     "Student" -> navController.navigate("activityPage") {
                                                         popUpTo("login") { inclusive = true }
                                                     }
-                                                    "Super Admin" -> navController.navigate("adminCtrl") {
+                                                    "super_admin" -> navController.navigate("adminCtrl") {
                                                         popUpTo("login") { inclusive = true }
                                                     }
-                                                    "Admin" -> navController.navigate("adminUserPage") {
+                                                    "admin" -> navController.navigate("adminUserPage") {
                                                         popUpTo("login") { inclusive = true }
                                                     }
                                                     else -> {
