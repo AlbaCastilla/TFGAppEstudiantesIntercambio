@@ -329,7 +329,7 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // City dropdown
+        // City dropdown (always enabled)
         Box {
             Row(
                 modifier = Modifier
@@ -365,14 +365,27 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Text fields
-        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth())
+        // All fields disabled if no city selected
+        val enabled = selectedCity.isNotEmpty()
+
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled
+        )
         Spacer(modifier = Modifier.height(10.dp))
 
-        OutlinedTextField(value = lastname, onValueChange = { lastname = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = lastname,
+            onValueChange = { lastname = it },
+            label = { Text("Last Name") },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled
+        )
         Spacer(modifier = Modifier.height(10.dp))
 
-        // DatePicker or Age input
         DatePickerField(
             date = age,
             onDateSelected = {
@@ -382,7 +395,7 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
                 val calculatedAge = if (birthYear != null) currentYear - birthYear else 0
                 ageError = calculatedAge !in 17..95
             },
-            isEnabled = true,
+            isEnabled = enabled,
             isError = ageError
         )
         if (ageError) {
@@ -391,12 +404,11 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // University dropdown
         Box {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(enabled = selectedCity.isNotEmpty()) { isUniversityDropdownOpen = true }
+                    .clickable(enabled = enabled) { isUniversityDropdownOpen = true }
                     .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
                     .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -427,7 +439,13 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled
+        )
         Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
@@ -435,7 +453,8 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
             onValueChange = { password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled
         )
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -444,53 +463,53 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
             onValueChange = { confirmPassword = it },
             label = { Text("Confirm Password") },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled
         )
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
             onClick = {
 
-                val clickHandler = run {
-                    if (!isFormValid) {
-                        Toast.makeText(context, "Please fill all fields correctly", Toast.LENGTH_SHORT).show()
-                        return@run
+                if (!isFormValid) {
+                    Toast.makeText(context, "Please fill all fields correctly", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
+
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnSuccessListener { result ->
+                        val userId = result.user?.uid ?: return@addOnSuccessListener
+                        val studentData = hashMapOf(
+                            "uid" to userId,
+                            "name" to name,
+                            "lastname" to lastname,
+                            "birthdate" to age,
+                            "email" to email,
+                            "role" to selectedRole,
+                            "city" to selectedCity,
+                            "university" to selectedUniversity,
+                            "homeCountry" to "",
+                            "homeCity" to "",
+                            "description" to "",
+                            "hobbies" to selectedHobbies.toList()
+                        )
+
+                        db.collection("users").document(userId)
+                            .set(studentData)
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "Student Registered", Toast.LENGTH_SHORT).show()
+                                navController.popBackStack()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(context, "Firestore error: ${it.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(context, "Auth error: ${it.message}", Toast.LENGTH_SHORT).show()
                     }
 
-                    auth.createUserWithEmailAndPassword(email, password)
-                        .addOnSuccessListener { result ->
-                            val userId = result.user?.uid ?: return@addOnSuccessListener
-                            val studentData = hashMapOf(
-                                "uid" to userId,
-                                "name" to name,
-                                "lastname" to lastname,
-                                "birthdate" to age,
-                                "email" to email,
-                                "role" to selectedRole,
-                                "city" to selectedCity,
-                                "university" to selectedUniversity,
-                                "homeCountry" to "",
-                                "homeCity" to "",
-                                "description" to "",
-                                "hobbies" to selectedHobbies.toList()
-                            )
-
-                            db.collection("users").document(userId)
-                                .set(studentData)
-                                .addOnSuccessListener {
-                                    Toast.makeText(context, "Student Registered", Toast.LENGTH_SHORT).show()
-                                    navController.popBackStack()
-                                }
-                                .addOnFailureListener {
-                                    Toast.makeText(context, "Firestore error: ${it.message}", Toast.LENGTH_SHORT).show()
-                                }
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(context, "Auth error: ${it.message}", Toast.LENGTH_SHORT).show()
-                        }
-                }
             },
-            enabled = isFormValid,
+            enabled = isFormValid && enabled,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Register Student")
@@ -498,6 +517,247 @@ fun StudentForm(navController: NavHostController, selectedRole: String, auth: Fi
 
     }
 }
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun StudentForm(navController: NavHostController, selectedRole: String, auth: FirebaseAuth, db: FirebaseFirestore) {
+//    val context = LocalContext.current
+//    val scrollState = rememberScrollState()
+//
+//
+//    var name by remember { mutableStateOf("") }
+//    var lastname by remember { mutableStateOf("") }
+//    var age by remember { mutableStateOf("") }
+//    var email by remember { mutableStateOf("") }
+//    var password by remember { mutableStateOf("") }
+//    var confirmPassword by remember { mutableStateOf("") }
+//    var selectedCity by remember { mutableStateOf("") }
+//    var cities by remember { mutableStateOf(listOf<String>()) }
+//    var isCityDropdownOpen by remember { mutableStateOf(false) }
+//    var universities by remember { mutableStateOf(listOf<Pair<String, List<String>>>()) }
+//    var selectedUniversity by remember { mutableStateOf("") }
+//    var isUniversityDropdownOpen by remember { mutableStateOf(false) }
+//    var ageError by remember { mutableStateOf(false) }
+//    var selectedHobbies by remember { mutableStateOf(setOf<String>()) }
+//
+//    val isFormValid = name.isNotBlank() && lastname.isNotBlank() &&
+//            age.isNotBlank() && !ageError &&
+//            email.isNotBlank() && password.isNotBlank() &&
+//            confirmPassword == password &&
+//            selectedCity.isNotBlank() && selectedUniversity.isNotBlank()
+//
+//    // Load cities
+//    LaunchedEffect(Unit) {
+//        db.collection("universities2").get()
+//            .addOnSuccessListener { snapshot ->
+//                cities = snapshot.mapNotNull { it.getString("city") }
+//            }
+//    }
+//
+//    // Load universities when city is selected
+//    LaunchedEffect(selectedCity) {
+//        if (selectedCity.isNotEmpty()) {
+//            db.collection("universities2")
+//                .whereEqualTo("city", selectedCity)
+//                .get()
+//                .addOnSuccessListener { snapshot ->
+//                    val doc = snapshot.documents.firstOrNull()
+//                    doc?.let {
+//                        db.collection("universities2")
+//                            .document(it.id)
+//                            .collection("universities")
+//                            .get()
+//                            .addOnSuccessListener { subSnap ->
+//                                universities = subSnap.mapNotNull { uni ->
+//                                    val name = uni.getString("name")
+//                                    val domain = uni.getString("student_email")?.substringAfter('@')
+//                                    if (name != null && domain != null) Pair(name, listOf(domain)) else null
+//                                }
+//                            }
+//                    }
+//                }
+//        }
+//    }
+//
+//    Column(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(16.dp),
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Text("Register Student", style = MaterialTheme.typography.headlineSmall)
+//
+//        Spacer(modifier = Modifier.height(20.dp))
+//
+//        // City dropdown
+//        Box {
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .clickable { isCityDropdownOpen = true }
+//                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+//                    .padding(12.dp),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Text(
+//                    text = if (selectedCity.isEmpty()) "Select City" else selectedCity,
+//                    modifier = Modifier.weight(1f),
+//                    color = if (selectedCity.isEmpty()) Color.Gray else MaterialTheme.colorScheme.onSurface
+//                )
+//                Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+//            }
+//
+//            DropdownMenu(
+//                expanded = isCityDropdownOpen,
+//                onDismissRequest = { isCityDropdownOpen = false }
+//            ) {
+//                cities.forEach { city ->
+//                    DropdownMenuItem(
+//                        text = { Text(city) },
+//                        onClick = {
+//                            selectedCity = city
+//                            isCityDropdownOpen = false
+//                        }
+//                    )
+//                }
+//            }
+//        }
+//
+//        Spacer(modifier = Modifier.height(10.dp))
+//
+//        // Text fields
+//        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth())
+//        Spacer(modifier = Modifier.height(10.dp))
+//
+//        OutlinedTextField(value = lastname, onValueChange = { lastname = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth())
+//        Spacer(modifier = Modifier.height(10.dp))
+//
+//        // DatePicker or Age input
+//        DatePickerField(
+//            date = age,
+//            onDateSelected = {
+//                age = it
+//                val birthYear = it.takeLast(4).toIntOrNull()
+//                val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+//                val calculatedAge = if (birthYear != null) currentYear - birthYear else 0
+//                ageError = calculatedAge !in 17..95
+//            },
+//            isEnabled = true,
+//            isError = ageError
+//        )
+//        if (ageError) {
+//            Text("Age must be between 17 and 95", color = MaterialTheme.colorScheme.error)
+//        }
+//
+//        Spacer(modifier = Modifier.height(10.dp))
+//
+//        // University dropdown
+//        Box {
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .clickable(enabled = selectedCity.isNotEmpty()) { isUniversityDropdownOpen = true }
+//                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+//                    .padding(12.dp),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Text(
+//                    text = if (selectedUniversity.isEmpty()) "Select University" else selectedUniversity,
+//                    modifier = Modifier.weight(1f),
+//                    color = if (selectedUniversity.isEmpty()) Color.Gray else MaterialTheme.colorScheme.onSurface
+//                )
+//                Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+//            }
+//
+//            DropdownMenu(
+//                expanded = isUniversityDropdownOpen,
+//                onDismissRequest = { isUniversityDropdownOpen = false }
+//            ) {
+//                universities.forEach { (name, _) ->
+//                    DropdownMenuItem(
+//                        text = { Text(name) },
+//                        onClick = {
+//                            selectedUniversity = name
+//                            isUniversityDropdownOpen = false
+//                        }
+//                    )
+//                }
+//            }
+//        }
+//
+//        Spacer(modifier = Modifier.height(10.dp))
+//
+//        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
+//        Spacer(modifier = Modifier.height(10.dp))
+//
+//        OutlinedTextField(
+//            value = password,
+//            onValueChange = { password = it },
+//            label = { Text("Password") },
+//            visualTransformation = PasswordVisualTransformation(),
+//            modifier = Modifier.fillMaxWidth()
+//        )
+//        Spacer(modifier = Modifier.height(10.dp))
+//
+//        OutlinedTextField(
+//            value = confirmPassword,
+//            onValueChange = { confirmPassword = it },
+//            label = { Text("Confirm Password") },
+//            visualTransformation = PasswordVisualTransformation(),
+//            modifier = Modifier.fillMaxWidth()
+//        )
+//        Spacer(modifier = Modifier.height(20.dp))
+//
+//        Button(
+//            onClick = {
+//
+//                val clickHandler = run {
+//                    if (!isFormValid) {
+//                        Toast.makeText(context, "Please fill all fields correctly", Toast.LENGTH_SHORT).show()
+//                        return@run
+//                    }
+//
+//                    auth.createUserWithEmailAndPassword(email, password)
+//                        .addOnSuccessListener { result ->
+//                            val userId = result.user?.uid ?: return@addOnSuccessListener
+//                            val studentData = hashMapOf(
+//                                "uid" to userId,
+//                                "name" to name,
+//                                "lastname" to lastname,
+//                                "birthdate" to age,
+//                                "email" to email,
+//                                "role" to selectedRole,
+//                                "city" to selectedCity,
+//                                "university" to selectedUniversity,
+//                                "homeCountry" to "",
+//                                "homeCity" to "",
+//                                "description" to "",
+//                                "hobbies" to selectedHobbies.toList()
+//                            )
+//
+//                            db.collection("users").document(userId)
+//                                .set(studentData)
+//                                .addOnSuccessListener {
+//                                    Toast.makeText(context, "Student Registered", Toast.LENGTH_SHORT).show()
+//                                    navController.popBackStack()
+//                                }
+//                                .addOnFailureListener {
+//                                    Toast.makeText(context, "Firestore error: ${it.message}", Toast.LENGTH_SHORT).show()
+//                                }
+//                        }
+//                        .addOnFailureListener {
+//                            Toast.makeText(context, "Auth error: ${it.message}", Toast.LENGTH_SHORT).show()
+//                        }
+//                }
+//            },
+//            enabled = isFormValid,
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//            Text("Register Student")
+//        }
+//
+//    }
+//}
 
 @Composable
 fun AdminForm(navController: NavHostController, selectedRole: String, auth: FirebaseAuth, db: FirebaseFirestore)
