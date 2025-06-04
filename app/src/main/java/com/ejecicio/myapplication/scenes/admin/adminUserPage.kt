@@ -71,7 +71,7 @@ fun AdminUserPage(navController: NavHostController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 72.dp) // Reserve space for the bottom nav bar
+                    .padding(bottom = 72.dp)
             ) {
                 Text(
                     "Students from your city",
@@ -114,7 +114,8 @@ fun AdminUserPage(navController: NavHostController) {
                                     }) {
                                         Icon(
                                             imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete user"
+                                            contentDescription = "Delete user",
+                                            tint = MaterialTheme.colorScheme.error
                                         )
                                     }
                                 }
