@@ -1,5 +1,6 @@
 package com.ejecicio.myapplication.scenes.admin
 
+import android.util.Log
 import com.google.firebase.firestore.DocumentReference
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 
 data class SectionContent(
     val intro: String = "",
-    val recommendations: String = "",
+    val reccomendations: String = "",
     val tip: String = ""
 )
 @Composable
@@ -37,7 +38,7 @@ fun AdminInfoPage(navController: NavHostController) {
 
     val sectionsData = remember { mutableStateMapOf<String, SectionContent>() }
     val cityDocRef = remember { mutableStateOf<DocumentReference?>(null) }
-    val isAdmin = remember { mutableStateOf(false) }
+
 
     // For each field in SectionContent, keep a state per section
     val introState = remember { mutableStateMapOf<String, MutableState<String>>() }
@@ -49,7 +50,6 @@ fun AdminInfoPage(navController: NavHostController) {
             val userDocRef = db.collection("users").document(it.uid)
             userDocRef.get().addOnSuccessListener { userSnapshot ->
                 val city = userSnapshot.getString("city")
-                isAdmin.value = userSnapshot.getBoolean("isAdmin") == true
                 if (!city.isNullOrBlank()) {
                     db.collection("info")
                         .whereEqualTo("city", city)
@@ -67,7 +67,7 @@ fun AdminInfoPage(navController: NavHostController) {
                                             if (content != null) {
                                                 sectionsData[section] = content
                                                 introState[section] = mutableStateOf(content.intro)
-                                                recsState[section] = mutableStateOf(content.recommendations)
+                                                recsState[section] = mutableStateOf(content.reccomendations)
                                                 tipState[section] = mutableStateOf(content.tip)
                                             }
                                         }
@@ -95,10 +95,10 @@ fun AdminInfoPage(navController: NavHostController) {
         items(sections) { section ->
             val content = sectionsData[section]
             val intro = introState[section]
-            val recs = recsState[section]
+            val reccomendations = recsState[section]
             val tip = tipState[section]
 
-            if (content != null && intro != null && recs != null && tip != null) {
+            if (content != null && intro != null && reccomendations != null && tip != null) {
                 Card(
                     modifier = Modifier
                         .padding(vertical = 8.dp)
@@ -109,12 +109,11 @@ fun AdminInfoPage(navController: NavHostController) {
                         Text(section, style = MaterialTheme.typography.titleLarge)
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        if (isAdmin.value) {
                             OutlinedTextField(
                                 value = intro.value,
                                 onValueChange = {
                                     intro.value = it
-                                    updateSection(section, intro.value, recs.value, tip.value, cityDocRef.value)
+                                    updateSection(section, intro.value, reccomendations.value, tip.value, cityDocRef.value)
                                 },
                                 label = { Text("Intro") },
                                 modifier = Modifier.fillMaxWidth()
@@ -122,10 +121,10 @@ fun AdminInfoPage(navController: NavHostController) {
 
                             Spacer(modifier = Modifier.height(8.dp))
                             OutlinedTextField(
-                                value = recs.value,
+                                value = reccomendations.value,
                                 onValueChange = {
-                                    recs.value = it
-                                    updateSection(section, intro.value, recs.value, tip.value, cityDocRef.value)
+                                    reccomendations.value = it
+                                    updateSection(section, intro.value, reccomendations.value, tip.value, cityDocRef.value)
                                 },
                                 label = { Text("Recommendations") },
                                 modifier = Modifier.fillMaxWidth(),
@@ -137,18 +136,12 @@ fun AdminInfoPage(navController: NavHostController) {
                                 value = tip.value,
                                 onValueChange = {
                                     tip.value = it
-                                    updateSection(section, intro.value, recs.value, tip.value, cityDocRef.value)
+                                    updateSection(section, intro.value, reccomendations.value, tip.value, cityDocRef.value)
                                 },
                                 label = { Text("Pro Tip") },
                                 modifier = Modifier.fillMaxWidth()
                             )
-                        } else {
-                            Text("Intro: ${content.intro}")
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text("Recommendations: ${content.recommendations}")
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text("Pro Tip: ${content.tip}")
-                        }
+
                     }
                 }
             } else {
@@ -165,12 +158,23 @@ fun AdminInfoPage(navController: NavHostController) {
 fun updateSection(
     section: String,
     intro: String,
-    recs: String,
+    reccomendations: String,
     tip: String,
     cityDocRef: DocumentReference?
 ) {
     if (cityDocRef == null) return
-    val sectionRef = cityDocRef.collection(section).document("content")
-    val newData = SectionContent(intro, recs, tip)
-    sectionRef.set(newData)
+
+    val sectionCollection = cityDocRef.collection(section)
+    val newData = SectionContent(intro, reccomendations, tip)
+
+    sectionCollection.get().addOnSuccessListener { querySnapshot ->
+        val docRef = querySnapshot.documents.firstOrNull()?.reference
+        if (docRef != null) {
+            docRef.set(newData)
+        } else {
+            sectionCollection.add(newData)
+        }
+    }.addOnFailureListener { e ->
+        Log.e("FirestoreUpdate", "Error updating section: $section", e)
+    }
 }
