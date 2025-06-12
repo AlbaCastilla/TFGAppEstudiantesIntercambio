@@ -43,8 +43,6 @@ fun RegisterScreen(navController: NavController) {
     val auth = FirebaseAuth.getInstance()
     val db = FirebaseFirestore.getInstance()
 
-
-    // State variables
     var cities by remember { mutableStateOf(listOf<String>()) }
     var selectedCity by remember { mutableStateOf("") }
     var isCityDropdownOpen by remember { mutableStateOf(false) }
@@ -69,7 +67,7 @@ fun RegisterScreen(navController: NavController) {
             email.isNotBlank() && password.isNotBlank() &&
             confirmPassword == password && isCitySelected && isUniversitySelected
 
-    // Fetch data
+    // fetch data
     LaunchedEffect(Unit) {
         db.collection("universities2").get()
             .addOnSuccessListener { snapshot ->
@@ -78,16 +76,6 @@ fun RegisterScreen(navController: NavController) {
             .addOnFailureListener {
                 Toast.makeText(context, "Error loading cities: ${it.message}", Toast.LENGTH_SHORT).show()
             }
-
-
-//        db.collection("universities").get()
-//            .addOnSuccessListener { snapshot ->
-//                universities = snapshot.mapNotNull { doc ->
-//                    val name = doc.getString("nombre")
-//                    val domain = doc.getString("correo_estudiantes")?.substringAfter('@')
-//                    if (name != null && domain != null) Pair(name, listOf(domain)) else null
-//                }
-//            }
     }
     LaunchedEffect(selectedCity) {
         if (selectedCity.isNotEmpty()) {
@@ -125,10 +113,11 @@ fun RegisterScreen(navController: NavController) {
             contentAlignment = Alignment.TopCenter
         ) {
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Spacer(modifier = Modifier.height(20.dp))
                 Text("Register", style = MaterialTheme.typography.headlineMedium)
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // City Dropdown (first thing shown)
+                // city Dropdown (first thing shown, mandatory to choose to be able to complete the other fields)
                 Box {
                     Row(
                         modifier = Modifier
@@ -187,21 +176,13 @@ fun RegisterScreen(navController: NavController) {
                     )
                 }
 
-                // Rest of form, shown only if city selected
+                // Rest of form (it now workd), shown only if city selected
                 customTextField(name, "Name", { name = it }, enabled = isCitySelected)
                 Spacer(modifier = Modifier.height(10.dp))
 
                 customTextField(lastname, "Last Name", { lastname = it }, enabled = isCitySelected)
                 Spacer(modifier = Modifier.height(10.dp))
 
-//                customTextField(age, "Age", {
-//                    age = it
-//                    ageError = it.toIntOrNull()?.let { it !in 17..95 } ?: false
-//                }, keyboardType = KeyboardType.Number, enabled = isCitySelected, isError = ageError)
-//
-//                if (ageError) {
-//                    Text("Age must be between 17 and 95", color = MaterialTheme.colorScheme.error)
-//                }
                 val calendar = Calendar.getInstance()
                 val year = calendar.get(Calendar.YEAR)
                 val month = calendar.get(Calendar.MONTH)

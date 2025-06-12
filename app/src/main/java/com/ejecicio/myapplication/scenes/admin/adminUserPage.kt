@@ -126,7 +126,6 @@ fun AdminUserPage(navController: NavHostController) {
             }
         }
 
-        // Floating Bottom NavBar
         FloatingBottomNavBarAdmin(
             navController = navController,
             modifier = Modifier

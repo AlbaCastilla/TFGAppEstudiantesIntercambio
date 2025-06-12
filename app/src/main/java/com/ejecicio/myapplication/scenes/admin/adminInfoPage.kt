@@ -14,6 +14,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.launch
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 
 data class SectionContent(
     val intro: String = "",
@@ -97,6 +100,8 @@ fun AdminInfoPage(navController: NavHostController) {
             val intro = introState[section]
             val reccomendations = recsState[section]
             val tip = tipState[section]
+            val context = LocalContext.current
+
 
             if (content != null && intro != null && reccomendations != null && tip != null) {
                 Card(
@@ -113,7 +118,7 @@ fun AdminInfoPage(navController: NavHostController) {
                                 value = intro.value,
                                 onValueChange = {
                                     intro.value = it
-                                    updateSection(section, intro.value, reccomendations.value, tip.value, cityDocRef.value)
+                                    updateSection(context,section, intro.value, reccomendations.value, tip.value, cityDocRef.value)
                                 },
                                 label = { Text("Intro") },
                                 modifier = Modifier.fillMaxWidth()
@@ -124,7 +129,7 @@ fun AdminInfoPage(navController: NavHostController) {
                                 value = reccomendations.value,
                                 onValueChange = {
                                     reccomendations.value = it
-                                    updateSection(section, intro.value, reccomendations.value, tip.value, cityDocRef.value)
+                                    updateSection(context,section, intro.value, reccomendations.value, tip.value, cityDocRef.value)
                                 },
                                 label = { Text("Recommendations") },
                                 modifier = Modifier.fillMaxWidth(),
@@ -136,7 +141,7 @@ fun AdminInfoPage(navController: NavHostController) {
                                 value = tip.value,
                                 onValueChange = {
                                     tip.value = it
-                                    updateSection(section, intro.value, reccomendations.value, tip.value, cityDocRef.value)
+                                    updateSection(context,section, intro.value, reccomendations.value, tip.value, cityDocRef.value)
                                 },
                                 label = { Text("Pro Tip") },
                                 modifier = Modifier.fillMaxWidth()
@@ -155,7 +160,9 @@ fun AdminInfoPage(navController: NavHostController) {
     }
 }
 
+
 fun updateSection(
+    context: Context,
     section: String,
     intro: String,
     reccomendations: String,
@@ -170,9 +177,13 @@ fun updateSection(
     sectionCollection.get().addOnSuccessListener { querySnapshot ->
         val docRef = querySnapshot.documents.firstOrNull()?.reference
         if (docRef != null) {
-            docRef.set(newData)
+            docRef.set(newData).addOnSuccessListener {
+                Toast.makeText(context, "Auto-saved $section", Toast.LENGTH_SHORT).show()
+            }
         } else {
-            sectionCollection.add(newData)
+            sectionCollection.add(newData).addOnSuccessListener {
+                Toast.makeText(context, "Auto-saved $section", Toast.LENGTH_SHORT).show()
+            }
         }
     }.addOnFailureListener { e ->
         Log.e("FirestoreUpdate", "Error updating section: $section", e)
