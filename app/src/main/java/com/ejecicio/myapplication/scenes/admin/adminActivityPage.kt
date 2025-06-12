@@ -25,6 +25,52 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 val activities = mutableListOf<Map<String, String>>()
 
+//@Composable
+//fun ActivityCardAdmin(
+//    title: String,
+//    date: String,
+//    time: String,
+//    description: String,
+//    uid: String,
+//    onDeleteClick: (String) -> Unit
+//) {
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 8.dp, vertical = 4.dp),
+//        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+//        colors = CardDefaults.cardColors(
+//            containerColor = MaterialTheme.colorScheme.surface,
+//            contentColor = MaterialTheme.colorScheme.onSurface
+//        )
+//    ) {
+//        Column(modifier = Modifier.padding(16.dp)) {
+//            Text(
+//                text = title,
+//                style = MaterialTheme.typography.titleLarge,
+//                color = MaterialTheme.colorScheme.primary
+//            )
+//            Spacer(modifier = Modifier.height(8.dp))
+//            Text("Date: $date", style = MaterialTheme.typography.bodyMedium)
+//            Text("Time: $time", style = MaterialTheme.typography.bodyMedium)
+//            Spacer(modifier = Modifier.height(8.dp))
+//            Text(description, style = MaterialTheme.typography.bodySmall)
+//            Spacer(modifier = Modifier.height(12.dp))
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.End
+//            ) {
+//                IconButton(onClick = { onDeleteClick(uid) }) {
+//                    Icon(
+//                        imageVector = Icons.Default.Delete,
+//                        contentDescription = "Delete Activity",
+//                        tint = MaterialTheme.colorScheme.error
+//                    )
+//                }
+//            }
+//        }
+//    }
+//}
 @Composable
 fun ActivityCardAdmin(
     title: String,
@@ -37,8 +83,8 @@ fun ActivityCardAdmin(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
@@ -51,10 +97,10 @@ fun ActivityCardAdmin(
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Date: $date", style = MaterialTheme.typography.bodyMedium)
-            Text("Time: $time", style = MaterialTheme.typography.bodyMedium)
+            Text("Date: $date", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+            Text("Time: $time", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(description, style = MaterialTheme.typography.bodySmall)
+            Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
             Spacer(modifier = Modifier.height(12.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -71,6 +117,7 @@ fun ActivityCardAdmin(
         }
     }
 }
+
 
 fun deleteActivityById(activityId: String) {
     val db = FirebaseFirestore.getInstance()
@@ -143,17 +190,63 @@ fun ActivityListAdmin(navController: NavHostController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 72.dp)
+                    .padding(bottom = 72.dp) ,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(40.dp))
                 Text(
-                    "Activities from your city",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(16.dp)
+                    text = "Activities from your city",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
+                Spacer(modifier = Modifier.height(20.dp))
 
                 if (activityList.isEmpty()) {
                     Text("No activities found.", modifier = Modifier.padding(16.dp))
                 } else {
+//                    LazyColumn(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(horizontal = 16.dp)
+//                    ) {
+//                        items(activityList) { activity ->
+//                            val uid = activity["uid"] ?: ""
+//                            val title = activity["title"] ?: ""
+//                            val date = activity["date"] ?: ""
+//                            val time = activity["time"] ?: ""
+//                            val description = activity["description"] ?: ""
+//
+//                            Card(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(vertical = 4.dp),
+//                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+//                            ) {
+//                                Column(modifier = Modifier.padding(16.dp)) {
+//                                    Text(title, style = MaterialTheme.typography.titleLarge)
+//                                    Spacer(modifier = Modifier.height(4.dp))
+//                                    Text("Date: $date", style = MaterialTheme.typography.bodyMedium)
+//                                    Text("Time: $time", style = MaterialTheme.typography.bodyMedium)
+//                                    Spacer(modifier = Modifier.height(4.dp))
+//                                    Text(description, style = MaterialTheme.typography.bodySmall)
+//                                    Spacer(modifier = Modifier.height(8.dp))
+//                                    Row(
+//                                        modifier = Modifier.fillMaxWidth(),
+//                                        horizontalArrangement = Arrangement.End
+//                                    ) {
+//                                        IconButton(onClick = {
+//                                            activityToDelete = uid to title
+//                                        }) {
+//                                            Icon(
+//                                                imageVector = Icons.Default.Delete,
+//                                                contentDescription = "Delete activity",
+//                                                tint = MaterialTheme.colorScheme.error
+//                                            )
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -166,39 +259,19 @@ fun ActivityListAdmin(navController: NavHostController) {
                             val time = activity["time"] ?: ""
                             val description = activity["description"] ?: ""
 
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text(title, style = MaterialTheme.typography.titleLarge)
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text("Date: $date", style = MaterialTheme.typography.bodyMedium)
-                                    Text("Time: $time", style = MaterialTheme.typography.bodyMedium)
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(description, style = MaterialTheme.typography.bodySmall)
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.End
-                                    ) {
-                                        IconButton(onClick = {
-                                            activityToDelete = uid to title
-                                        }) {
-                                            Icon(
-                                                imageVector = Icons.Default.Delete,
-                                                contentDescription = "Delete activity",
-                                                tint = MaterialTheme.colorScheme.error
-                                            )
-                                        }
-                                    }
-                                }
-                            }
+                            ActivityCardAdmin(
+                                title = title,
+                                date = date,
+                                time = time,
+                                description = description,
+                                uid = uid,
+                                onDeleteClick = { id -> activityToDelete = id to title }
+                            )
                         }
                     }
-                }
+                   }
+
+
             }
         }
 
