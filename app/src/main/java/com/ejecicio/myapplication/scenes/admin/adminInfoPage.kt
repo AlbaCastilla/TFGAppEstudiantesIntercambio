@@ -16,7 +16,11 @@ import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.launch
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.zIndex
+import com.ejecicio.myapplication.components.FloatingBottomNavBarAdmin
 
 data class SectionContent(
     val intro: String = "",
@@ -82,6 +86,11 @@ fun AdminInfoPage(navController: NavHostController) {
         }
     }
 
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -158,7 +167,15 @@ fun AdminInfoPage(navController: NavHostController) {
             Spacer(modifier = Modifier.height(120.dp))
         }
     }
-}
+
+    FloatingBottomNavBarAdmin(
+        navController = navController,
+        modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .padding(bottom = 16.dp)
+            .zIndex(1f)
+    )
+}}
 
 
 fun updateSection(
