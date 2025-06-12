@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
-import com.ejecicio.myapplication.components.FloatingBottomNavBar
 import com.ejecicio.myapplication.components.FloatingBottomNavBarAdmin
 import com.ejecicio.myapplication.ui.theme.MyApplicationTheme
 
@@ -90,124 +89,248 @@ fun AdminInfoPage(navController: NavHostController) {
         }
     }
 
+//    MyApplicationTheme(isDarkMode = isDarkMode) {
+//        val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+//            focusedBorderColor = MaterialTheme.colorScheme.primary,
+//            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+//            focusedLabelColor = MaterialTheme.colorScheme.primary,
+//            unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+//            disabledBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+//        )
+//
+//        val scrollState = rememberScrollState()
+//
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .background(MaterialTheme.colorScheme.background),
+//
+//            ) {
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .verticalScroll(scrollState)
+//                .background(MaterialTheme.colorScheme.background)
+//                .padding(20.dp),
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            Spacer(modifier = Modifier.height(20.dp))
+//            Text(
+//                text = "Info Panel",
+//                style = MaterialTheme.typography.headlineMedium,
+//                color = MaterialTheme.colorScheme.onBackground
+//            )
+//
+//            Spacer(modifier = Modifier.height(24.dp))
+//
+//            sections.forEach { section ->
+//                val intro = introState[section]
+//                val recs = recsState[section]
+//                val tip = tipState[section]
+//
+//                if (intro != null && recs != null && tip != null) {
+//                    Card(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(vertical = 8.dp),
+//                        elevation = CardDefaults.cardElevation(4.dp),
+//                        colors = CardDefaults.cardColors(
+//                            containerColor = MaterialTheme.colorScheme.surface
+//                        )
+//                    ) {
+//                        Column(modifier = Modifier.padding(16.dp)) {
+//                            Text(
+//                                text = section,
+//                                style = MaterialTheme.typography.titleLarge,
+//                                color = MaterialTheme.colorScheme.onSurface
+//                            )
+//                            Spacer(modifier = Modifier.height(8.dp))
+//
+//                            OutlinedTextField(
+//                                value = intro.value,
+//                                onValueChange = { intro.value = it },
+//                                label = { Text("Intro") },
+//                                colors = textFieldColors,
+//                                modifier = Modifier.fillMaxWidth()
+//                            )
+//                            OutlinedTextField(
+//                                value = recs.value,
+//                                onValueChange = { recs.value = it },
+//                                label = { Text("Recommendations") },
+//                                colors = textFieldColors,
+//                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+//                            )
+//                            OutlinedTextField(
+//                                value = tip.value,
+//                                onValueChange = { tip.value = it },
+//                                label = { Text("Tip") },
+//                                colors = textFieldColors,
+//                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+//                            )
+//
+//                            Spacer(modifier = Modifier.height(8.dp))
+//
+//                            Button(
+//                                onClick = {
+//                                    val updated = mapOf(
+//                                        "intro" to intro.value,
+//                                        "reccomendations" to recs.value,
+//                                        "tip" to tip.value
+//                                    )
+//                                    cityDocRef.value?.collection(section)?.document("content")
+//                                        ?.set(updated)
+//                                        ?.addOnSuccessListener {
+//                                            Toast.makeText(context, "Section updated", Toast.LENGTH_SHORT).show()
+//                                        }
+//                                        ?.addOnFailureListener {
+//                                            Toast.makeText(context, "Update failed", Toast.LENGTH_SHORT).show()
+//                                        }
+//                                },
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .height(48.dp),
+//                                shape = RoundedCornerShape(8.dp),
+//                                colors = ButtonDefaults.buttonColors(
+//                                    containerColor = MaterialTheme.colorScheme.primary,
+//                                    contentColor = Color.White
+//                                )
+//                            ) {
+//                                Text("Save Section")
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            Spacer(modifier = Modifier.height(40.dp))
+//            FloatingBottomNavBar(
+//                navController = navController,
+//                modifier = Modifier
+//                    .padding(bottom = 16.dp)
+//                    .align(Alignment.CenterHorizontally)
+//            )
+//
+//        }
+//
+//    }
+//
+//}
+//}
     MyApplicationTheme(isDarkMode = isDarkMode) {
-        val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-            focusedLabelColor = MaterialTheme.colorScheme.primary,
-            unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-            disabledBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-        )
-
-        val scrollState = rememberScrollState()
-
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
                 .background(MaterialTheme.colorScheme.background)
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = "Info Panel",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            val scrollState = rememberScrollState()
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(bottom = 72.dp) // bottom padding to avoid nav bar overlap
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "Info Panel",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
 
-            sections.forEach { section ->
-                val intro = introState[section]
-                val recs = recsState[section]
-                val tip = tipState[section]
+                Spacer(modifier = Modifier.height(24.dp))
 
-                if (intro != null && recs != null && tip != null) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        elevation = CardDefaults.cardElevation(4.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surface
-                        )
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(
-                                text = section,
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSurface
+                sections.forEach { section ->
+                    val intro = introState[section]
+                    val recs = recsState[section]
+                    val tip = tipState[section]
+
+                    if (intro != null && recs != null && tip != null) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            elevation = CardDefaults.cardElevation(4.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            OutlinedTextField(
-                                value = intro.value,
-                                onValueChange = { intro.value = it },
-                                label = { Text("Intro") },
-                                colors = textFieldColors,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                            OutlinedTextField(
-                                value = recs.value,
-                                onValueChange = { recs.value = it },
-                                label = { Text("Recommendations") },
-                                colors = textFieldColors,
-                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-                            )
-                            OutlinedTextField(
-                                value = tip.value,
-                                onValueChange = { tip.value = it },
-                                label = { Text("Tip") },
-                                colors = textFieldColors,
-                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Button(
-                                onClick = {
-                                    val updated = mapOf(
-                                        "intro" to intro.value,
-                                        "reccomendations" to recs.value,
-                                        "tip" to tip.value
-                                    )
-                                    cityDocRef.value?.collection(section)?.document("content")
-                                        ?.set(updated)
-                                        ?.addOnSuccessListener {
-                                            Toast.makeText(context, "Section updated", Toast.LENGTH_SHORT).show()
-                                        }
-                                        ?.addOnFailureListener {
-                                            Toast.makeText(context, "Update failed", Toast.LENGTH_SHORT).show()
-                                        }
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(48.dp),
-                                shape = RoundedCornerShape(8.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = Color.White
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text(
+                                    text = section,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
-                            ) {
-                                Text("Save Section")
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                OutlinedTextField(
+                                    value = intro.value,
+                                    onValueChange = { intro.value = it },
+                                    label = { Text("Intro") },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                                OutlinedTextField(
+                                    value = recs.value,
+                                    onValueChange = { recs.value = it },
+                                    label = { Text("Recommendations") },
+
+                                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                                )
+                                OutlinedTextField(
+                                    value = tip.value,
+                                    onValueChange = { tip.value = it },
+                                    label = { Text("Tip") },
+
+                                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                Button(
+                                    onClick = {
+                                        val updated = mapOf(
+                                            "intro" to intro.value,
+                                            "reccomendations" to recs.value,
+                                            "tip" to tip.value
+                                        )
+                                        cityDocRef.value?.collection(section)?.document("content")
+                                            ?.set(updated)
+                                            ?.addOnSuccessListener {
+                                                Toast.makeText(context, "Section updated", Toast.LENGTH_SHORT).show()
+                                            }
+                                            ?.addOnFailureListener {
+                                                Toast.makeText(context, "Update failed", Toast.LENGTH_SHORT).show()
+                                            }
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(48.dp),
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text("Save Section")
+                                }
                             }
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(40.dp))
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
-
-            FloatingBottomNavBar(
+            FloatingBottomNavBarAdmin(
                 navController = navController,
                 modifier = Modifier
+                    .align(Alignment.BottomCenter)
                     .padding(bottom = 16.dp)
-                    .align(Alignment.CenterHorizontally)
             )
         }
-    }
-}
+    }}
+
 
 //@Composable
 //fun AdminInfoPage(navController: NavHostController) {
