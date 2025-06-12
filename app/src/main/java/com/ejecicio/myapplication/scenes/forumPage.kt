@@ -18,7 +18,7 @@ fun ForumPage(navController: NavHostController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Yellow box as the main content
+        // yellow box as the main content
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -29,7 +29,6 @@ fun ForumPage(navController: NavHostController) {
             Text(text = "Forum Page", color = Color.White)
         }
 
-        // Floating Bottom NavBar
         FloatingBottomNavBar(
             navController = navController, // Pass the navController
             modifier = Modifier
