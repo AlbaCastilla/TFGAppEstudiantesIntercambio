@@ -4,7 +4,9 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
@@ -22,7 +24,6 @@ import com.ejecicio.myapplication.ui.theme.MyApplicationTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfilePage(navController: NavHostController) {
@@ -39,6 +40,9 @@ fun ProfilePage(navController: NavHostController) {
     var age by remember { mutableStateOf("") }
     var email by remember { mutableStateOf(currentUser?.email ?: "") }
     var university by remember { mutableStateOf("") }
+    var homeCountry by remember { mutableStateOf("") }
+    var homeCity by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
     var hobbies by remember { mutableStateOf(setOf<String>()) }
 
     var isDarkMode by remember { mutableStateOf(false) }
@@ -52,6 +56,9 @@ fun ProfilePage(navController: NavHostController) {
                     lastname = document.getString("lastname") ?: ""
                     age = document.getLong("age")?.toString() ?: ""
                     university = document.getString("university") ?: ""
+                    homeCountry = document.getString("homeCountry") ?: ""
+                    homeCity = document.getString("homeCity") ?: ""
+                    description = document.getString("description") ?: ""
                     hobbies = document.get("hobbies") as? Set<String> ?: emptySet()
                     isLoading = false
                 }
@@ -76,21 +83,25 @@ fun ProfilePage(navController: NavHostController) {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
+            // Añadimos verticalScroll aquí
+            val scrollState = rememberScrollState()
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(scrollState)
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     "Profile",
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // Light/Dark Mode Toggle
                 Row(
@@ -159,15 +170,21 @@ fun ProfilePage(navController: NavHostController) {
                 profileField(age, { age = it }, "Age")
                 profileField(email, {}, "Email", enabled = false)
                 profileField(university, {}, "University", enabled = false)
+                profileField(homeCountry, { homeCountry = it }, "Home Country")
+                profileField(homeCity, { homeCity = it }, "Home City")
+                profileField(description, { description = it }, "Description")
 
                 Spacer(modifier = Modifier.height(24.dp))
-                
+
                 Button(
                     onClick = {
                         val updatedUser = mapOf(
                             "name" to name,
                             "lastname" to lastname,
                             "age" to (age.toIntOrNull() ?: 0),
+                            "homeCountry" to homeCountry,
+                            "homeCity" to homeCity,
+                            "description" to description,
                             "hobbies" to hobbies.toList()
                         )
                         currentUser?.uid?.let { uid ->
@@ -209,14 +226,16 @@ fun ProfilePage(navController: NavHostController) {
                 ) {
                     Text(
                         text = "Log Out",
-                        color = Color.White, // Text color
+                        color = Color.White,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier
                             .background(Color.Red, RoundedCornerShape(8.dp))
                             .padding(horizontal = 20.dp, vertical = 10.dp)
                     )
                 }
+                Spacer(modifier = Modifier.height(40.dp))
             }
+
             FloatingBottomNavBar(
                 navController = navController,
                 modifier = Modifier
@@ -224,6 +243,5 @@ fun ProfilePage(navController: NavHostController) {
                     .padding(bottom = 16.dp)
             )
         }
-
     }
 }

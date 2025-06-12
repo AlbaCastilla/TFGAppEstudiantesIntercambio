@@ -23,8 +23,7 @@ import androidx.navigation.NavHostController
 import com.ejecicio.myapplication.components.FloatingBottomNavBarAdmin
 import com.google.firebase.firestore.FirebaseFirestore
 
-// Sample list to simulate activities in memory (should be in ViewModel ideally)
-val activities = mutableListOf<Map<String, String>>() // e.g., [{"uid": "123", "title": "Title", ...}]
+val activities = mutableListOf<Map<String, String>>()
 
 @Composable
 fun ActivityCardAdmin(
@@ -144,7 +143,7 @@ fun ActivityListAdmin(navController: NavHostController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 72.dp) // leave space for bottom nav bar
+                    .padding(bottom = 72.dp)
             ) {
                 Text(
                     "Activities from your city",
@@ -203,7 +202,6 @@ fun ActivityListAdmin(navController: NavHostController) {
             }
         }
 
-        // Floating Bottom NavBar
         FloatingBottomNavBarAdmin(
             navController = navController,
             modifier = Modifier
@@ -212,7 +210,7 @@ fun ActivityListAdmin(navController: NavHostController) {
         )
     }
 
-    // Confirm deletion dialog
+    // Confirm deletion popuo
     activityToDelete?.let { (uid, title) ->
         AlertDialog(
             onDismissRequest = { activityToDelete = null },

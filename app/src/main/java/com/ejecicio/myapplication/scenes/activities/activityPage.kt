@@ -60,13 +60,12 @@ fun ActivityPage(navController: NavHostController) {
         val db = FirebaseFirestore.getInstance()
         val usersCollection = db.collection("users")
 
-        // Get the city of the current user
+
         usersCollection.document(currentUserId)
             .get()
             .addOnSuccessListener { userDoc ->
                 val userCity = userDoc.getString("city") ?: ""
 
-                // Now get all activities and filter by city
                 db.collection("activities")
                     .get()
                     .addOnSuccessListener { result ->
