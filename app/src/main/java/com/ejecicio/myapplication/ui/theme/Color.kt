@@ -36,11 +36,6 @@ val darkBlack = Color(0xFFFDFCFC) // Light black text for dark mode
 
 
 
-
-
-
-/////
-
 val esnBlue = Color(0xFF006F91)
 val esnAccentBlue = Color(0xFF4C9ABF)
 val esnLightGray = Color(0xFFF2F2F2)

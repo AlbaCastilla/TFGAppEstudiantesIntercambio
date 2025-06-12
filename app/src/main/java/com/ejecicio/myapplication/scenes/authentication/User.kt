@@ -16,7 +16,6 @@ data class User (
     val description:String = "",
     val hobbies: List<String> = listOf(),
     val city:String = "",
-
     )
 
 
