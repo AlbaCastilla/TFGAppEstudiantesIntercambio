@@ -26,7 +26,7 @@ fun FloatingBottomNavBarAdmin(
     val currentRoute = currentBackStackEntry?.destination?.route
     val selectedIndex = routes.indexOf(currentRoute).takeIf { it >= 0 } ?: 0 // Ensure valid index
 
-    // Log the current route for debugging
+    // Log the current route- debugging
     LaunchedEffect(currentRoute) {
         println("Current Route: $currentRoute")
     }
@@ -34,7 +34,7 @@ fun FloatingBottomNavBarAdmin(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .offset(y = (-50).dp), // Apply offset to push the navbar higher
+            .offset(y = (-50).dp),
         contentAlignment = Alignment.Center
     ) {
         Card(
@@ -42,31 +42,31 @@ fun FloatingBottomNavBarAdmin(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .height(56.dp)
-                .shadow(4.dp), // Adjust the height of the navbar
+                .shadow(4.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary // Navbar background color
+                containerColor = MaterialTheme.colorScheme.primary
             )
         ) {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween, // Ensures items stretch across the row
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxSize()
             ) {
                 items.forEachIndexed { index, item ->
-                    Box( // Use Box to give width flexibility to each item
+                    Box(
                         modifier = Modifier
-                            .weight(1f) // Distribute each item evenly
-                            .fillMaxHeight() // Make the item fill the height of the Row
+                            .weight(1f)
+                            .fillMaxHeight()
                             .background(
                                 if (index == selectedIndex)
-                                    MaterialTheme.colorScheme.secondary // Selected button background
+                                    MaterialTheme.colorScheme.secondary
                                 else
-                                    MaterialTheme.colorScheme.primary // Default button background
+                                    MaterialTheme.colorScheme.primary
                             )
                             .clickable {
                                 val targetRoute = routes[index]
                                 if (currentRoute != targetRoute) {
-                                    println("Navigating from $currentRoute to $targetRoute") // Debug log
+                                    println("Navigating from $currentRoute to $targetRoute")
                                     navController.navigate(targetRoute) {
                                         popUpTo(navController.graph.startDestinationId) { saveState = true }
                                         launchSingleTop = true
@@ -74,15 +74,15 @@ fun FloatingBottomNavBarAdmin(
                                     }
                                 }
                             },
-                        contentAlignment = Alignment.Center // Center the text inside each Box
+                        contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = item,
                             fontSize = 12.sp, // Scalable pixels
                             color = if (index == selectedIndex)
-                                MaterialTheme.colorScheme.onSecondary // Selected text color
+                                MaterialTheme.colorScheme.onSecondary
                             else
-                                MaterialTheme.colorScheme.onPrimary // Unselected text color
+                                MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }

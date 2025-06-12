@@ -49,35 +49,7 @@ fun InfoPage(navController: NavHostController) {
 
     val sectionIndexMap = remember { mutableStateMapOf<String, Int>() }
 
-//    LaunchedEffect(Unit) {
-//        db.collection("info")
-//            .whereEqualTo("city", "Madrid")
-//            .get()
-//            .addOnSuccessListener { querySnapshot ->
-//                if (!querySnapshot.isEmpty) {
-//                    val madridDoc = querySnapshot.documents[0]
-//                    for (section in sections) {
-//                        madridDoc.reference.collection(section)
-//                            .get()
-//                            .addOnSuccessListener { sectionSnapshot ->
-//                                val document = sectionSnapshot.documents.firstOrNull()
-//                                if (document != null) {
-//                                    val content = document.toObject<SectionContent>()
-//                                    if (content != null) {
-//                                        sectionsData[section] = content
-//                                    }
-//                                }
-//                            }
-//                            .addOnFailureListener { exception ->
-//                                Log.e("InfoPage", "Error fetching section $section: ${exception.message}")
-//                            }
-//                    }
-//                }
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.e("InfoPage", "Error fetching Madrid info: ${exception.message}")
-//            }
-//    }
+
     LaunchedEffect(Unit) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
@@ -225,7 +197,7 @@ fun InfoPage(navController: NavHostController) {
             }
 
             itemsIndexed(sections) { index, section ->
-                // Track index for scroll-to-item mapping
+                // track index for scroll-to-item mapping
                 sectionIndexMap[section] = index + 1 // +1 because header takes position 0
 
                 Column(
