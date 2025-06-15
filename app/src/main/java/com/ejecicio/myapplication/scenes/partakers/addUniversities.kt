@@ -199,17 +199,17 @@ fun AddUniversities(navController: NavHostController) {
     ]
     """  // Complete the JSON data
 
-    // Parse JSON to list of University objects
+    // Pass JSON to list of University objects
     val universities = Gson().fromJson(universitiesJson, Array<University>::class.java).toList()
 
-    // Function to add universities to Firestore
+    //  add universities to Firestore
     fun addUniversitiesToFirestore() {
         universities.forEach { university ->
-            // Generate a random UUID for each university
+            // random UID for each university
             val randomId = UUID.randomUUID().toString()
 
             dbFirestore.collection("universities")
-                .document(randomId) // Use random UUID as document ID
+                .document(randomId) // use random UID as document ID
                 .set(university)
                 .addOnSuccessListener {
                     Log.d("Firestore", "University ${university.nombre} added successfully!")

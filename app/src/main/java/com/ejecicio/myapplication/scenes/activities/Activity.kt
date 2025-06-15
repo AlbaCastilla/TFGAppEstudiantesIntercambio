@@ -21,4 +21,19 @@ data class Activity (
     val city: String,
 
 )
-
+//data class Activity(
+//    val uid: String = "",
+//    val title: String = "",
+//    val category: String = "",
+//    val description: String = "",
+//    val price: Float = 0f,
+//    val maxPeople: Int = 0,
+//    val date: String = "",
+//    val time: String = "",
+//    val duration: String = "",
+//    val locationLink: String = "",
+//    val otherInfo: String = "",
+//    val peopleAdded: Int = 0,
+//    val creator: String = "",
+//    val city: String = ""
+//)

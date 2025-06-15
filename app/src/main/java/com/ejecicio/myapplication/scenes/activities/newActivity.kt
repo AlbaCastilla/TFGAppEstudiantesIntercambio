@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddActivityScreen(navController: NavHostController) {
@@ -50,11 +51,11 @@ fun AddActivityScreen(navController: NavHostController) {
             price.isNotEmpty() && maxPeople.isNotEmpty() && duration.isNotEmpty() &&
             locationLink.isNotEmpty() && date.isNotEmpty() && time.isNotEmpty()
 
-    // Dropdown menu options
+    // Dropdown menu options for types of activities
     val categories = listOf("Sports/Exercise", "Cultural", "Outdoors", "Crafty", "Music", "Volunteer", "Other")
     var expanded by remember { mutableStateOf(false) }
 
-    // Date Picker Dialog
+    // Date picker
     val calendar = Calendar.getInstance()
     val datePickerDialog = DatePickerDialog(
         context,
@@ -67,7 +68,7 @@ fun AddActivityScreen(navController: NavHostController) {
         calendar.get(Calendar.DAY_OF_MONTH)
     )
 
-    // Time Picker Dialog
+    // Time oicker
     val timePickerDialog = TimePickerDialog(
         context,
         { _, hour, minute ->
@@ -106,7 +107,6 @@ fun AddActivityScreen(navController: NavHostController) {
         Text("Create Activity", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Input fields for activity details
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
@@ -117,7 +117,7 @@ fun AddActivityScreen(navController: NavHostController) {
             isError = formSubmitted && title.isEmpty()
         )
 
-        // Dropdown menu for category
+        // Dropdown menu -category
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
@@ -212,12 +212,12 @@ fun AddActivityScreen(navController: NavHostController) {
             maxLines = 3
         )
 
-        // Date Picker Button
+        // Date pickerbtn
         Button(onClick = { datePickerDialog.show() }, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
             Text(text = if (date.isEmpty()) "Select Date" else date)
         }
 
-        // Time Picker Button
+        // Time pickerbtn
         Button(onClick = { timePickerDialog.show() }, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
             Text(text = if (time.isEmpty()) "Select Time" else time)
         }
@@ -226,11 +226,11 @@ fun AddActivityScreen(navController: NavHostController) {
             onClick = {
                 formSubmitted = true
                 if (isFormValid && creator != null) {
-                    // Get the selected date and time from the calendar
+                    // egt selected date and time from the calendar
                     val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
                     val formattedTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(calendar.time)
 
-                    // Fetch city of the logged-in user from Firestore
+                    // fetch city of the logged-in user from Firestore
                     db.collection("users").document(creator)
                         .get()
                         .addOnSuccessListener { userDocument ->
@@ -255,7 +255,7 @@ fun AddActivityScreen(navController: NavHostController) {
                             db.collection("activities")
                                 .add(newActivity)
                                 .addOnSuccessListener { activityDocument ->
-                                    // Create Chat
+                                    // create Chat automatically after activity is created
                                     val newChat = Chat(
                                         uid = UUID.randomUUID().toString(),
                                         activity = activityDocument.id,
@@ -266,7 +266,7 @@ fun AddActivityScreen(navController: NavHostController) {
                                     db.collection("chats")
                                         .add(newChat)
                                         .addOnSuccessListener { chatDocumentRef ->
-                                            // Add welcome message
+                                            // add welcome message automatically from the system
                                             val welcomeMessage = Message(
                                                 uid = UUID.randomUUID().toString(),
                                                 timestamp = System.currentTimeMillis().toString(),
@@ -288,7 +288,7 @@ fun AddActivityScreen(navController: NavHostController) {
                                             Log.e("AddActivity", "Error creating chat: $e")
                                         }
 
-                                    // Navigate to Messages Page
+                                    // nav to messages page after activity is created and chat is set up
                                     navController.navigate("messagesPage")
                                 }
                                 .addOnFailureListener { e ->
@@ -300,79 +300,6 @@ fun AddActivityScreen(navController: NavHostController) {
                         }
                 }
             },
-//            onClick = {
-//                formSubmitted = true
-//                if (isFormValid && creator != null) {
-//                    // Get the selected date and time from the calendar
-//                    val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
-//                    val formattedTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(calendar.time)
-//
-//                    val newActivity = Activity(
-//                        uid = UUID.randomUUID().toString(),
-//                        title = title,
-//                        category = category,
-//                        description = description,
-//                        price = price.toFloat(),
-//                        maxPeople = maxPeople.toInt(),
-//                        date = formattedDate,
-//                        time = formattedTime,
-//                        duration = duration,
-//                        locationLink = locationLink,
-//                        otherInfo = otherInfo,
-//                        creator = creator // Use the logged-in user's ID
-//                    )
-//
-//                    db.collection("activities")
-//                        .add(newActivity)
-//                        .addOnSuccessListener { activityDocument ->
-//                            // The activity has been created successfully, now create the Chat
-//                            val newChat = Chat(
-//                                uid = UUID.randomUUID().toString(),
-//                                activity = activityDocument.id, // ID de la actividad recién creada
-//                                creator = creator,
-//                                participants = listOf(creator)
-//                            )
-//
-//                            db.collection("chats")
-//                                .add(newChat)
-//                                .addOnSuccessListener { chatDocumentRef ->
-//                                    // Fetch the user's name from the 'users' collection
-//                                    db.collection("users").document(creator)
-//                                        .get()
-//                                        .addOnSuccessListener { userDocument ->
-//                                            val userName = userDocument.getString("name") ?: "Undefined"
-//
-//                                            // Crear el primer mensaje de bienvenida en la subcolección "messages" dentro del Chat
-//                                            val welcomeMessage = Message(
-//                                                uid = UUID.randomUUID().toString(),
-//                                                timestamp = System.currentTimeMillis().toString(),
-//                                                info = "Welcome to the chat!",
-//                                                userId = "system", // System sends fitrst message
-//                                                userName = "System" // System name shown in chat
-//                                            )
-//
-//                                            chatDocumentRef.collection("messages")
-//                                                .add(welcomeMessage)
-//                                                .addOnSuccessListener {
-//                                                    Log.d("AddActivity", "Welcome message added to chat")
-//                                                }
-//                                                .addOnFailureListener { e ->
-//                                                    Log.e("AddActivity", "Error adding welcome message: $e")
-//                                                }
-//                                        }
-//                                }
-//                                .addOnFailureListener { e ->
-//                                    Log.e("AddActivity", "Error creating chat: $e")
-//                                }
-//
-//                            // Navigate to Messages Page after activity is created and chat is set up
-//                            navController.navigate("messagesPage")
-//                        }
-//                        .addOnFailureListener { e ->
-//                            Log.e("AddActivity", "Error creating activity: $e")
-//                        }
-//                }
-//            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp),
