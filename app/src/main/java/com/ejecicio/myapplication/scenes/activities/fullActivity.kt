@@ -1010,7 +1010,7 @@ fun FullActivity(navController: NavHostController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
-                                .background(MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(24.dp))
+                                .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(24.dp))
                                 .padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
@@ -1021,19 +1021,19 @@ fun FullActivity(navController: NavHostController) {
                                     modifier = Modifier
                                         .size(48.dp)
                                         .padding(end = 8.dp),
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = MaterialTheme.colorScheme.onSecondary
                                 )
                                 if (creatorDetails != null) {
                                     Column {
                                         Text(
                                             text = creatorDetails!!.first,
                                             style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                                            color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         Text(
                                             text = creatorDetails!!.second,
                                             style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                                            color = MaterialTheme.colorScheme.onSecondary
                                         )
                                     }
                                 } else {
@@ -1119,7 +1119,7 @@ fun PinkBox(label: String, value: String) {
     Box(
         modifier = Modifier
             .background(
-                color = MaterialTheme.colorScheme.secondaryContainer,
+                color = MaterialTheme.colorScheme.secondary,
                 shape = CircleShape
             )
             .padding(16.dp)
@@ -1127,7 +1127,7 @@ fun PinkBox(label: String, value: String) {
         Text(
             text = "$label: $value",
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            color = MaterialTheme.colorScheme.onSecondary,
             textAlign = TextAlign.Center
         )
     }

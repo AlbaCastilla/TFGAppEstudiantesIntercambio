@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ejecicio.myapplication.components.FloatingBottomNavBar
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun ActivityPage(navController: NavHostController) {
@@ -68,16 +70,54 @@ fun ActivityPage(navController: NavHostController) {
 
                 db.collection("activities")
                     .get()
+//                    .addOnSuccessListener { result ->
+//                        for (document in result) {
+//                            val creatorId = document.getString("creator") ?: ""
+//                            val activityCity = document.getString("city") ?: ""
+//
+//                            if (creatorId != currentUserId && activityCity == userCity) {
+//                                val data = mapOf(
+//                                    "uid" to document.id,
+//                                    "title" to (document.getString("title") ?: "No Title"),
+//                                    "date" to (document.getString("date") ?: "No Date"),
+//                                    "time" to (document.getString("time") ?: "No Time"),
+//                                    "description" to (document.getString("description") ?: "No Description"),
+//                                    "category" to (document.getString("category") ?: "Other")
+//                                )
+//                                activities.add(data)
+//                            }
+//                        }
+//                    }
                     .addOnSuccessListener { result ->
+                        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        val today = Calendar.getInstance().apply {
+                            // Eliminamos la parte de la hora para comparar solo fechas
+                            set(Calendar.HOUR_OF_DAY, 0)
+                            set(Calendar.MINUTE, 0)
+                            set(Calendar.SECOND, 0)
+                            set(Calendar.MILLISECOND, 0)
+                        }.time
+
                         for (document in result) {
                             val creatorId = document.getString("creator") ?: ""
                             val activityCity = document.getString("city") ?: ""
+                            val activityDateStr = document.getString("date") ?: ""
 
-                            if (creatorId != currentUserId && activityCity == userCity) {
+                            val activityDate = try {
+                                sdf.parse(activityDateStr)
+                            } catch (e: Exception) {
+                                null
+                            }
+
+                            if (creatorId != currentUserId &&
+                                activityCity == userCity &&
+                                activityDate != null &&
+                                !activityDate.before(today)
+                            ) {
                                 val data = mapOf(
                                     "uid" to document.id,
                                     "title" to (document.getString("title") ?: "No Title"),
-                                    "date" to (document.getString("date") ?: "No Date"),
+                                    "date" to activityDateStr,
                                     "time" to (document.getString("time") ?: "No Time"),
                                     "description" to (document.getString("description") ?: "No Description"),
                                     "category" to (document.getString("category") ?: "Other")

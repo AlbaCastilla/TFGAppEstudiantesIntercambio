@@ -5,12 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -85,8 +87,7 @@ fun AdminUserPage(navController: NavHostController) {
             } else {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 72.dp),
+                        .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(20.dp))
@@ -104,6 +105,57 @@ fun AdminUserPage(navController: NavHostController) {
                             modifier = Modifier.padding(16.dp)
                         )
                     } else {
+//                        LazyColumn(
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                                .padding(horizontal = 16.dp)
+//                        ) {
+//                            items(studentList) { student ->
+//                                val name = student["name"] as? String ?: "N/A"
+//                                val email = student["email"] as? String ?: "N/A"
+//                                val uid = student["uid"] as? String ?: ""
+//
+//                                Card(
+//                                    modifier = Modifier
+//                                        .fillMaxWidth()
+//                                        .padding(vertical = 8.dp),
+//                                    elevation = CardDefaults.cardElevation(4.dp),
+//                                    colors = CardDefaults.cardColors(
+//                                        containerColor = MaterialTheme.colorScheme.surface
+//                                    )
+//                                ) {
+//                                    Row(
+//                                        modifier = Modifier
+//                                            .fillMaxWidth()
+//                                            .padding(16.dp),
+//                                        verticalAlignment = Alignment.CenterVertically,
+//                                        horizontalArrangement = Arrangement.SpaceBetween
+//                                    ) {
+//                                        Column {
+//                                            Text(
+//                                                "Name: $name",
+//                                                color = MaterialTheme.colorScheme.onSurface,
+//                                                style = MaterialTheme.typography.bodyLarge
+//                                            )
+//                                            Text(
+//                                                "Email: $email",
+//                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+//                                                style = MaterialTheme.typography.bodyMedium
+//                                            )
+//                                        }
+//                                        IconButton(onClick = {
+//                                            studentToDelete = uid to name
+//                                        }) {
+//                                            Icon(
+//                                                imageVector = Icons.Default.Delete,
+//                                                contentDescription = "Delete user",
+//                                                tint = MaterialTheme.colorScheme.error
+//                                            )
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -131,16 +183,8 @@ fun AdminUserPage(navController: NavHostController) {
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Column {
-                                            Text(
-                                                "Name: $name",
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                                style = MaterialTheme.typography.bodyLarge
-                                            )
-                                            Text(
-                                                "Email: $email",
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                style = MaterialTheme.typography.bodyMedium
-                                            )
+                                            Text("Name: $name", color = MaterialTheme.colorScheme.onSurface)
+                                            Text("Email: $email", color = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                         IconButton(onClick = {
                                             studentToDelete = uid to name
@@ -154,7 +198,59 @@ fun AdminUserPage(navController: NavHostController) {
                                     }
                                 }
                             }
-                        }
+
+                            item {
+                                Spacer(modifier = Modifier.height(20.dp))
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 70.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    TextButton(
+                                        onClick = {
+                                            FirebaseAuth.getInstance().signOut()
+                                            navController.navigate("login") {
+                                                popUpTo("profile") { inclusive = true }
+                                            }
+                                        }
+                                    ) {
+                                        Text(
+                                            text = "Log Out",
+                                            color = Color.White,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            modifier = Modifier
+                                                .background(Color.Red, RoundedCornerShape(8.dp))
+                                                .padding(horizontal = 20.dp, vertical = 10.dp)
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.height(80.dp))
+                            }
+
+
+//                        TextButton(
+//                            onClick = {
+//                                FirebaseAuth.getInstance().signOut()
+//                                navController.navigate("login") {
+//                                    popUpTo("profile") { inclusive = true }
+//                                }
+//                            },
+//                            modifier = Modifier
+//                                .padding(bottom = 70.dp)
+//                        ) {
+//                            Text(
+//                                text = "Log Out",
+//                                color = Color.White,
+//                                style = MaterialTheme.typography.bodyLarge,
+//                                modifier = Modifier
+//                                    .background(Color.Red, RoundedCornerShape(8.dp))
+//                                    .padding(horizontal = 20.dp, vertical = 10.dp,)
+//                            )
+//                        }
+//                        Spacer(modifier = Modifier.height(80.dp))
                     }
                 }
             }
@@ -219,7 +315,7 @@ fun AdminUserPage(navController: NavHostController) {
             )
         }
     }
-}
+}}
 
 //@Composable
 //fun AdminUserPage(navController: NavHostController) {
