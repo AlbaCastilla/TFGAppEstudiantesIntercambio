@@ -1,6 +1,7 @@
 package com.ejecicio.myapplication.scenes.superAdmin
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -82,6 +83,28 @@ fun AdminCtrl(navController: NavHostController) {
             "Admin" -> AdminForm(navController, selectedRole, auth, db)
             "Super Admin" -> SuperAdminForm(navController, selectedRole, auth, db)
         }
+        Spacer(modifier = Modifier.height(30.dp))
+        TextButton(
+            onClick = {
+                FirebaseAuth.getInstance().signOut()
+                navController.navigate("login") {
+                    popUpTo("profile") { inclusive = true }
+                }
+            },
+            modifier = Modifier
+                .padding(bottom = 70.dp)
+        ) {
+            Text(
+                text = "Log Out",
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .background(Color.Red, RoundedCornerShape(8.dp))
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(40.dp))
+
     }
 }
 
