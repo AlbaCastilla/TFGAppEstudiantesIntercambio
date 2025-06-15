@@ -17,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -27,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminCtrl(navController: NavHostController) {
     var selectedRole by remember { mutableStateOf("Student") }
@@ -44,26 +47,106 @@ fun AdminCtrl(navController: NavHostController) {
         Spacer(modifier = Modifier.height(20.dp))
 
         // role dropdown - mandatory to choose to be able to complete the other fields
+//        Box(modifier = Modifier.fillMaxWidth()) {
+//            OutlinedTextField(
+//                value = selectedRole,
+//                onValueChange = {},
+//                label = { Text("Select Role") },
+//                trailingIcon = {
+//                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+//                },
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .clickable { isRoleDropdownExpanded = true },
+//                enabled = false
+//            )
+//            DropdownMenu(
+//                expanded = isRoleDropdownExpanded,
+//                onDismissRequest = { isRoleDropdownExpanded = false }
+//            ) {
+//                roles.forEach {
+//                    DropdownMenuItem(
+//                        text = { Text(it) },
+//                        onClick = {
+//                            selectedRole = it
+//                            isRoleDropdownExpanded = false
+//                        }
+//                    )
+//                }
+//            }
+//        }
         Box(modifier = Modifier.fillMaxWidth()) {
+//            OutlinedTextField(
+//                value = selectedRole,
+//                onValueChange = {},
+//                label = {
+//                    Text(
+//                        "Select Role",
+//                        color = Color.Black,
+//                        fontWeight = FontWeight.Bold
+//                    )
+//                },
+//                trailingIcon = {
+//                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+//                },
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .clickable { isRoleDropdownExpanded = true },
+//                enabled = false,
+//                textStyle = TextStyle(
+//                    color = Color.Black,
+//                    fontWeight = FontWeight.Bold
+//                )
+//            )
             OutlinedTextField(
                 value = selectedRole,
                 onValueChange = {},
-                label = { Text("Select Role") },
+                label = {
+                    Text(
+                        "Select Role",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+//                trailingIcon = {
+//                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+//                },
                 trailingIcon = {
-                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = null,
+                        tint = Color.Black 
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { isRoleDropdownExpanded = true },
-                enabled = false
+                enabled = false,
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                ),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Black,
+                    unfocusedBorderColor = Color.Black,
+                    disabledBorderColor = Color.Black,
+                )
             )
+
+
             DropdownMenu(
                 expanded = isRoleDropdownExpanded,
                 onDismissRequest = { isRoleDropdownExpanded = false }
             ) {
                 roles.forEach {
                     DropdownMenuItem(
-                        text = { Text(it) },
+                        text = {
+                            Text(
+                                it,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
                         onClick = {
                             selectedRole = it
                             isRoleDropdownExpanded = false
@@ -72,6 +155,7 @@ fun AdminCtrl(navController: NavHostController) {
                 }
             }
         }
+
 
         Spacer(modifier = Modifier.height(20.dp))
 
